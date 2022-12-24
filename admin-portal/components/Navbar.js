@@ -1,15 +1,33 @@
-import styles from '../styles/Navbar.module.css'
-import Link from "next/link"
+import styles from "../styles/Navbar.module.css";
+import { WrapItem, Avatar, Flex, useColorMode } from "@chakra-ui/react";
+import {MoonIcon, SunIcon} from '@chakra-ui/icons'
+import Register from "./RegisteringModal";
+import { useState } from "react";
 const Navbar = () => {
-   return(
+    const { colorMode, toggleColorMode } = useColorMode()
+  return (
     <div className={styles.navbar}>
-        <div className={styles.link}>
-           <Link href="/"> Home</Link>
-           <Link href="/about"> Register Hospital</Link>
-           <Link href="/profile">Profile</Link>
-        </div>
-    </div>
-   )
-}
+        <Flex color="white"align="center">Welcome to Admin portal</Flex>
+      <Flex align="center">
+        <Register/>
+      </Flex>
+        <Flex  alignItems="center" >
+        <div onClick={() => {
+       
+            toggleColorMode()
 
-export default Navbar
+            }}>
+                {colorMode === 'light' ? <SunIcon color= "white"boxSize={6}/> : <MoonIcon color="white" boxSize={6}/>}
+           
+        </div> 
+        
+          <WrapItem ml={6}>
+            <Avatar name="Dan Abrahmov" src="https://bit.ly/dan-abramov" />
+          </WrapItem>
+        </Flex>
+   
+    </div>
+  );
+};
+
+export default Navbar;
