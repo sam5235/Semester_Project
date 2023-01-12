@@ -18,9 +18,11 @@ import {
 } from "@chakra-ui/react";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import HospitalRegister from "./modals/HospitalRegister";
+import { useAuth } from "../context/AuthContext";
 
 export default function Nav() {
   const { colorMode, toggleColorMode } = useColorMode();
+  const { logout } = useAuth();
 
   return (
     <>
@@ -91,7 +93,7 @@ export default function Nav() {
                     <MenuDivider />
                     <MenuItem>Your Servers</MenuItem>
                     <MenuItem>Account Settings</MenuItem>
-                    <MenuItem>Logout</MenuItem>
+                    <MenuItem onClick={logout}>Logout</MenuItem>
                   </MenuList>
                 </Menu>
               </Stack>

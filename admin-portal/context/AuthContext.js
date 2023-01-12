@@ -22,11 +22,11 @@ const AuthContextProvider = ({ children }) => {
 
   const login = (email, pass) => signInWithEmailAndPassword(auth, email, pass);
 
-  const makeAdmin = async (uid) => {
-    await setDoc(doc(db, "users", uid), {
-      role: "admin",
-    });
-  };
+  // const makeAdmin = async (uid) => {
+  //   await setDoc(doc(db, "users", uid), {
+  //     role: "admin",
+  //   });
+  // };
 
   const logout = async () => {
     await signOut(auth);
@@ -36,7 +36,6 @@ const AuthContextProvider = ({ children }) => {
     const unsubscrive = onAuthStateChanged(auth, (user) => {
       if (user) {
         const docRef = doc(db, "users", user.uid);
-        console.log({docRef});
         getDoc(docRef)
           .then((snap) => {
             const data = snap.data();
