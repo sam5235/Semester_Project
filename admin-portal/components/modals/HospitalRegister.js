@@ -16,6 +16,8 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { GiHospitalCross } from "react-icons/gi";
+
+import { createHealthCareCenter } from "../../firebase/healthServices";
 import PasswordInput from "../PasswordInput";
 
 function HospitalRegister() {
@@ -25,9 +27,17 @@ function HospitalRegister() {
   const [type, setType] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleOnClose = () => {
+    setIsLoading(false);
+    onClose();
+  };
 
   const handleOnAdd = () => {
-    console.log({ name, address, type, email, password });
+    const center = { name, address, type, email, password };
+    setIsLoading(true);
+    createHealthCareCenter(center, handleOnClose);
   };
 
   return (
@@ -101,10 +111,19 @@ function HospitalRegister() {
           </ModalBody>
 
           <ModalFooter>
-            <Button variant="ghost" mr={3} onClick={onClose}>
+            <Button
+              disabled={isLoading}
+              variant="ghost"
+              mr={3}
+              onClick={onClose}
+            >
               Cancel
             </Button>
-            <Button colorScheme="brand" onClick={handleOnAdd}>
+            <Button
+              colorScheme="brand"
+              isLoading={isLoading}
+              onClick={handleOnAdd}
+            >
               Add
             </Button>
           </ModalFooter>
