@@ -4,7 +4,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { db, auth } from "../config/firebase";
 
 const AuthContext = createContext({
@@ -21,12 +21,6 @@ const AuthContextProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   const login = (email, pass) => signInWithEmailAndPassword(auth, email, pass);
-
-  // const makeAdmin = async (uid) => {
-  //   await setDoc(doc(db, "users", uid), {
-  //     role: "admin",
-  //   });
-  // };
 
   const logout = async () => {
     await signOut(auth);

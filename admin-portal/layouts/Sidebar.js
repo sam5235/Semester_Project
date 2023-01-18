@@ -13,21 +13,19 @@ import {
 import { FiHome, FiMenu } from "react-icons/fi";
 import { FaRegHospital } from "react-icons/fa";
 import { MdOutlineSick, MdOutlineArticle } from "react-icons/md";
-import { GiHypodermicTest } from "react-icons/gi";
 import NextLink from "next/link";
 
 const LinkItems = [
   { name: "Home", icon: FiHome, href: "/" },
-  { name: "Hospitals", icon: FaRegHospital, href: "/hospital" },
+  { name: "Health Centers", icon: FaRegHospital, href: "/hospital" },
   { name: "Users", icon: MdOutlineSick },
-  { name: "Lab Reports", icon: GiHypodermicTest },
   { name: "Posts", icon: MdOutlineArticle },
 ];
 
 export default function Sidebar({ children }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
-    <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
+    <Box minH="100vh">
       <SidebarContent
         onClose={() => onClose}
         display={{ base: "none", md: "block" }}
@@ -58,8 +56,6 @@ const SidebarContent = ({ onClose, ...rest }) => {
   return (
     <Box
       bg={useColorModeValue("white", "gray.900")}
-      borderRight="1px"
-      borderRightColor={useColorModeValue("gray.200", "gray.700")}
       w={{ base: "full", md: 60 }}
       pos="fixed"
       h="full"
@@ -90,20 +86,31 @@ const NavItem = ({ icon, href, children, ...rest }) => {
         role="group"
         cursor="pointer"
         _hover={{
-          bg: "brand.300",
+          bg: "brand.400",
           color: "white",
         }}
         {...rest}
       >
         {icon && (
-          <Icon
+          <Flex
+            p="1"
             mr="4"
-            fontSize="16"
-            _groupHover={{
-              color: "white",
-            }}
-            as={icon}
-          />
+            w={30}
+            h={30}
+            border="1px"
+            justify="center"
+            align="center"
+            borderRadius="md"
+            borderColor={useColorModeValue("gray.300", "gray.900")}
+          >
+            <Icon
+              fontSize="16"
+              _groupHover={{
+                color: "white",
+              }}
+              as={icon}
+            />
+          </Flex>
         )}
         {children}
       </Flex>
