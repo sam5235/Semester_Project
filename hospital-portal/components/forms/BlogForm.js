@@ -24,7 +24,7 @@ const options = ["Discovery", "Service", "Diseases"].map((data) => ({
   value: data,
 }));
 
-const BlogForm = ({ content, selectedBlog }) => {
+const BlogForm = ({ content, selectedBlog, setMode }) => {
   const { user } = useAuth();
   const [files, setFiles] = useState([]);
   const [title, setTitle] = useState("");
