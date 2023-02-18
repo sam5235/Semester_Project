@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -15,6 +15,7 @@ import {
   InputGroup,
   InputLeftElement,
   Select,
+  Spinner,
   Table,
   TableCaption,
   TableContainer,
@@ -29,6 +30,7 @@ import {
 } from "@chakra-ui/react";
 import { FaRegHospital } from "react-icons/fa";
 import { DeleteIcon, EditIcon, SearchIcon } from "@chakra-ui/icons";
+import { getHealthCareCenters } from "../firebase/healthServices";
 
 const HospitalPage = () => {
   const [name, setName] = useState("");
@@ -37,6 +39,18 @@ const HospitalPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [healthCenters, setHealthCenters] = useState([]);
+  const [isTableLoading, setIsTableLoading] = useState(true);
+
+  const test = async () => {
+    const healthCenters = await getHealthCareCenters();
+    setHealthCenters(healthCenters);
+    setIsTableLoading(false);
+  };
+
+  useEffect(() => {
+    test();
+  }, []);
 
   return (
     <Grid
@@ -107,63 +121,42 @@ const HospitalPage = () => {
             icon={<DeleteIcon />}
           />
         </Flex>
-
-        <TableContainer>
-          <Table variant="simple" colorScheme="brand">
-            <TableCaption>Total healthcare services in Meditopia</TableCaption>
-            <Thead>
-              <Tr>
-                <Th />
-                <Th>Health Care Name</Th>
-                <Th>Type</Th>
-                <Th>Address</Th>
-                <Th isNumeric>Users Registered</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              <Tr>
-                <Td>
-                  <Checkbox />
-                </Td>
-                <Td>inches</Td>
-                <Td>millimetres (mm)</Td>
-                <Td>millimetres (mm)</Td>
-                <Td isNumeric>25.4</Td>
-              </Tr>
-              <Tr>
-                <Td>
-                  <Checkbox />
-                </Td>
-
-                <Td>feet</Td>
-                <Td>millimetres (mm)</Td>
-                <Td>centimetres (cm)</Td>
-                <Td isNumeric>30.48</Td>
-              </Tr>
-              <Tr>
-                <Td>
-                  <Checkbox />
-                </Td>
-                <Td>yards</Td>
-                <Td>metres (m)</Td>
-                <Td>metres (m)</Td>
-                <Td isNumeric>0.91444</Td>
-              </Tr>
-            </Tbody>
-            <Tfoot>
-              <Tr>
-                <Td>
-                  <Checkbox />
-                </Td>
-
-                <Th>To convert</Th>
-                <Th>into</Th>
-                <Th>into</Th>
-                <Th isNumeric>multiply by</Th>
-              </Tr>
-            </Tfoot>
-          </Table>
-        </TableContainer>
+        {isTableLoading && (
+          <Flex w="full" justifyContent="center">
+            <Spinner />
+          </Flex>
+        )}
+        {!isTableLoading && (
+          <TableContainer>
+            <Table variant="simple" colorScheme="brand">
+              <TableCaption>
+                Total healthcare services in Meditopia
+              </TableCaption>
+              <Thead>
+                <Tr>
+                  <Th />
+                  <Th>Health Care Name</Th>
+                  <Th>Type</Th>
+                  <Th>Address</Th>
+                </Tr>
+              </Thead>
+              <Tbody w="full">
+                {healthCenters.map((center) => {
+                  return (
+                    <Tr key={center.id}>
+                      <Td>
+                        <Checkbox />
+                      </Td>
+                      <Td>{center.name}</Td>
+                      <Td>{center.type}</Td>
+                      <Td>{center.address}</Td>
+                    </Tr>
+                  );
+                })}
+              </Tbody>
+            </Table>
+          </TableContainer>
+        )}
       </GridItem>
       <GridItem colSpan={2} position="sticky" top={70}>
         <Card bg="chakra-body-bg" boxShadow="xl">

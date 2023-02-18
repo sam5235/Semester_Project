@@ -1,8 +1,8 @@
 import { createUserWithEmailAndPassword, signOut } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, getDocs, collection } from "firebase/firestore";
 import { secondaryAuth, db, auth } from "../config/firebase";
 
-export const createHealthCareCenter = async (center, onFinish) => {
+export const createHealthCareCenter = (center, onFinish) => {
   createUserWithEmailAndPassword(secondaryAuth, center.email, center.password)
     .then((cred) => {
       // creating health role on users document
@@ -26,4 +26,15 @@ export const createHealthCareCenter = async (center, onFinish) => {
       onFinish();
       console.log({ error });
     });
+};
+
+export const getHealthCareCenters = async () => {
+  const centers = [];
+  const querySnapshot = await getDocs(collection(db, "health_centers"));
+  
+  querySnapshot.forEach((doc) => {
+    centers.push(doc.data());
+  });
+
+  return centers;
 };
