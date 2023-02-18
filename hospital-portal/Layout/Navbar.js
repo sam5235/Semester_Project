@@ -17,54 +17,79 @@ import {
   ModalContent,
   useDisclosure,
   useColorModeValue,
+  Divider,
 } from "@chakra-ui/react";
-import { GiHospitalCross } from "react-icons/gi";
-import { useAuth } from "../context/AuthContext";
+import { MdOutlineSick } from "react-icons/md";
+import { IoMdLogOut, IoMdSettings } from "react-icons/io";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
+
+import { useAuth } from "../context/AuthContext";
 import PatientForm from "../components/common/patientForm";
 import AddRecords from "../components/modals/AddRecordModal";
+
 const Navbar = () => {
   const { colorMode, toggleColorMode } = useColorMode();
-  const { logout } = useAuth();
-  const { isOpen: isForm, onOpen: openForm, onClose: closeForm } = useDisclosure();
+  const { user, logout } = useAuth();
+  const {
+    isOpen: isForm,
+    onOpen: openForm,
+    onClose: closeForm,
+  } = useDisclosure();
 
   return (
     <Box
-      bg={useColorModeValue("brand.400", "gray.800")}
+      bgGradient="linear(to-r, blue.500, blue.400)"
+      // bg={useColorModeValue("brand.400", "gray.800")}
       position="fixed"
       width="100%"
       zIndex={2}
       py={1}
     >
       <Container maxW="8xl">
-        <Flex justifyContent="space-between" alignItems="center" px={3}>
-          <Box rounded="full" bg="white" p={2}>
-            <Image src="check-up.png" width="30px" />
-          </Box>
-          <Flex alignItems="center" justifyContent="space-between" width={450}>
+        <Flex h={12} justifyContent="space-between" alignItems="center" px={3}>
+          <Flex>
+            <Image src="logo.png" width="40px" />
+            <Box ml={2}>
+              <Text
+                fontSize="1xl"
+                as="b"
+                textTransform="uppercase"
+                color="white"
+              >
+                Meditopia H. Portal
+              </Text>
+              <Text fontSize="xs" color="white">
+                {user.displayName}
+              </Text>
+            </Box>
+          </Flex>
+          <Flex alignItems="center" gap={4} width={450}>
             <Button
-              leftIcon={<GiHospitalCross />}
+              leftIcon={<MdOutlineSick />}
               bg="white"
-              boxShadow="2xl"
               color="brand.400"
+              size={"sm"}
               variant="solid"
               onClick={openForm}
             >
               Add Patient
             </Button>
+
             <Modal isOpen={isForm} onClose={closeForm}>
               <ModalOverlay />
               <ModalContent>
                 <PatientForm />
               </ModalContent>
             </Modal>
-            <AddRecords/>
-            <Icon boxSize={6} onClick={toggleColorMode}>
-              {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
+
+            <AddRecords />
+
+            <Icon boxSize={6} onClick={toggleColorMode} cursor="pointer" mx="2">
+              {colorMode === "light" ? <MoonIcon color="white" /> : <SunIcon />}
             </Icon>
             <Menu>
               <MenuButton>
-                <Avatar size={"md"} src="man.png" />
+                <Avatar size={"sm"} />
               </MenuButton>
 
               <MenuList
@@ -72,12 +97,15 @@ const Navbar = () => {
                 flexDirection="column"
                 alignItems={"center"}
               >
-                <Avatar size={"md"} src="man.png" />
-                <Text py={3} color="brand.400" as="b">
-                  Hospital Name
-                </Text>
-                <MenuItem>Settings</MenuItem>
-                <MenuItem onClick={logout}>Logout</MenuItem>
+                <Box>
+                  <Image src={user?.photoURL} width="200px" />
+                  <Divider />
+                </Box>
+
+                <MenuItem icon={<IoMdSettings />}>Settings</MenuItem>
+                <MenuItem icon={<IoMdLogOut />} onClick={logout}>
+                  Logout
+                </MenuItem>
               </MenuList>
             </Menu>
           </Flex>

@@ -1,39 +1,66 @@
-import { Flex, Button, Box, Container, useColorModeValue } from "@chakra-ui/react";
-import { IoIosPeople } from "react-icons/io";
-import { HiHome } from "react-icons/hi";
-import { BsSignpost2Fill, BsFillCalendar2CheckFill } from "react-icons/bs";
+import { Flex, Button, Container, Icon, Tooltip } from "@chakra-ui/react";
+import {
+  GoHome,
+  GoOrganization,
+  GoFileMedia,
+  GoCalendar,
+} from "react-icons/go";
 
 import { useRouter } from "next/router";
+
+const linkButtons = [
+  { name: "Home", icon: <Icon as={GoHome} color="blue.500" />, href: "/" },
+  {
+    name: "Patients",
+    icon: <Icon as={GoOrganization} color="blue.500" />,
+    href: "/patients",
+  },
+  {
+    name: "Posts",
+    icon: <Icon color="blue.500" as={GoFileMedia} />,
+    href: "/posts",
+  },
+  {
+    name: "Appointments",
+    icon: <Icon as={GoCalendar} color="blue.500" />,
+    href: "/appointments",
+  },
+];
+
 const Sidebar = ({ children }) => {
-  const linkButtons = [
-    { name: "Home", icon: <HiHome />, href: "/" },
-    { name: "Patients", icon: <IoIosPeople />,  href:'/patients' },
-    {name: 'Posts' ,icon : <BsSignpost2Fill /> ,href: '/posts'},
-    {name: 'Appointments' , icon : <BsFillCalendar2CheckFill/>, href : '/appointments'}
-  ];
   const router = useRouter();
+  const { pathname } = router;
+
   return (
     <Flex>
       <Flex
         direction="column"
-        alignItems="start"
+        alignItems="center"
         position="fixed"
-        boxShadow='dark-lg'
+        boxShadow="2xl"
         height="100%"
-        width="200px"
-        bg={useColorModeValue("#f5f5f5", "gray.800")}
+        width="70px"
+        pt={5}
       >
         {linkButtons.map((link, index) => (
-          <Button key={index} m={2} onClick={() => router.push(link.href)} boxShadow="dark-lg" leftIcon={link.icon}  bg={useColorModeValue("#f5f5f5", "gray.800")}>
-          {link.name}
-        </Button>
-        ))} 
-        
-
+          <Tooltip key={index} placement="right" hasArrow label={link.name}>
+            <Button
+              m={2}
+              fontSize="2xl"
+              variant={pathname === link.href ? "outline" : "solid"}
+              borderColor={pathname === link.href && "blue.400"}
+              p={2}
+              onClick={() => router.push(link.href)}
+            >
+              {link.icon}
+            </Button>
+          </Tooltip>
+        ))}
       </Flex>
-     
-        <Container  pl={200}  maxW="8xl">{children}</Container>
-      
+
+      <Container pl={70} maxW="8xl">
+        {children}
+      </Container>
     </Flex>
   );
 };

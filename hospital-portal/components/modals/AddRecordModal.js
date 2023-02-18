@@ -56,9 +56,9 @@ const AddRecords = () => {
       <Button
         leftIcon={<GiHospitalCross />}
         bg="white"
-        boxShadow="2xl"
         color="brand.400"
         variant="solid"
+        size={"sm"}
         onClick={openSearch}
       >
         Add new Record

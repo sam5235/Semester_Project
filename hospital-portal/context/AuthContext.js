@@ -3,6 +3,7 @@ import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
+  updateProfile,
 } from "firebase/auth";
 import { db, auth } from "../config/firebase";
 import { doc, getDoc } from "firebase/firestore";
@@ -34,7 +35,7 @@ const AuthContextProvider = ({ children }) => {
           .then((snap) => {
             const data = snap.data();
             if (data.role === "health") {
-              console.log("success");
+              console.info("success");
               setUser(user);
             } else {
               logout();
@@ -43,7 +44,8 @@ const AuthContextProvider = ({ children }) => {
           })
           .catch((err) => {
             logout();
-            console.log(err)});
+            console.log(err);
+          });
       } else {
         setIsLoading(false);
         setUser(null);

@@ -18,5 +18,12 @@ const theme = extendTheme({
   },
   initialColorMode: "light",
   useSystemColorMode: false,
+  styles: {
+    global: (props) => ({
+      body: {
+        bg: props.colorMode === "dark" ? "gray.900" : "#f5f5f5",
+      },
+    }),
+  },
 });
 export default theme;

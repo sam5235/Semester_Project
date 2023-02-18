@@ -59,7 +59,7 @@ const Login = () => {
             width="fit-content"
             bg= {useColorModeValue("white", "gray.400")}  
                     >
-            <Image src="check-up.png" width={75} />
+            <Image src="logo-blue.png" width={75} />
           </Box>
           <Text
             fontSize="xl"
