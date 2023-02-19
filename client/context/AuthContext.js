@@ -34,7 +34,9 @@ const AuthContextProvider = ({ children }) => {
         getDoc(docref)
           .then((snap) => {
             const data = snap.data();
-            if (data.role === "health") {
+            console.log(data);
+            if (!data || data.role === undefined) {
+              // doesn't have a admin or health role
               console.info("success");
               setUser(user);
             } else {

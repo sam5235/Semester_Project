@@ -91,9 +91,9 @@ const Navbar = () => {
                 </MenuList>
               </Menu>
             ) : (
-              pathname !== "/login" && (
+              pathname.toLowerCase() !== "/login" && (
                 <Button
-                  onClick={() => router.replace("/")}
+                  onClick={() => router.replace("/login")}
                   borderRadius="3xl"
                   variant="outline"
                 >

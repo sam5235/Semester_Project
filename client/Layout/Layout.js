@@ -5,7 +5,7 @@ const Layout = ({ children }) => {
   return (
     <Box>
       <Navbar />
-      <Container maxW={"7xl"}>{children}</Container>
+      <Container pt={9} maxW={"7xl"}>{children}</Container>
     </Box>
   );
 };
