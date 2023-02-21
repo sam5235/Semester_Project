@@ -16,7 +16,6 @@ import {
   ModalOverlay,
   ModalContent,
   useDisclosure,
-  useColorModeValue,
   Divider,
 } from "@chakra-ui/react";
 import { MdOutlineSick } from "react-icons/md";
@@ -69,7 +68,7 @@ const Navbar = () => {
               bg="white"
               color="brand.400"
               size={"sm"}
-              variant="solid"
+              variant="ghost"
               onClick={openForm}
             >
               Add Patient

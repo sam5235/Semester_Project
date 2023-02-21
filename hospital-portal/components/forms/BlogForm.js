@@ -14,8 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
 import { useState } from "react";
-import { useAuth } from "../../context/AuthContext";
-import { publishBlog } from "../../firebase/blogServices";
+import { publishBlog, updateBlog } from "../../firebase/blogServices";
 
 import ImageDrop from "../ImageDrop";
 
@@ -24,43 +23,45 @@ const options = ["Discovery", "Service", "Diseases"].map((data) => ({
   value: data,
 }));
 
-const BlogForm = ({ content, selectedBlog, setMode }) => {
-  const { user } = useAuth();
-  const [files, setFiles] = useState([]);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [categories, setCategories] = useState([]);
+const BlogForm = ({ blog, setBlog, files, setFiles }) => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const onPubish = async () => {
-    const blog = {
-      title,
-      description,
-      categories,
-      files,
-      content,
-    };
-    setIsLoading(true);
-    await publishBlog(blog, () => setIsLoading(false));
+  const onFinish = () => {
+    setFiles([]);
+    setBlog({});
+    setIsLoading(false);
   };
 
-  const validateContent = () => {
-    if (!content || !content.content) {
+  const onPubish = async () => {
+    setIsLoading(true);
+    if (blog.edit) {
+      await updateBlog({ ...blog, files }, onFinish);
+    } else {
+      await publishBlog({ ...blog, files }, onFinish);
+    }
+  };
+
+  const setTitle = (title) => {
+    setBlog((b) => ({ ...b, title }));
+  };
+
+  const setDescription = (description) => {
+    setBlog((b) => ({ ...b, description }));
+  };
+
+  const setCategories = (categories) => {
+    setBlog((b) => ({ ...b, categories }));
+  };
+
+  const validateContent = (content) => {
+    if (!content) {
       return false;
     }
-
-    return (
-      content.content.length > 1 ||
-      Boolean(Object.keys(content.content[0]).length > 1)
-    );
+    return Boolean(Object.keys(content).length > 1);
   };
 
   const publishDisabled =
-    !Boolean(title) ||
-    !Boolean(files.length) ||
-    !Boolean(description) ||
-    !Boolean(categories.length) ||
-    !validateContent();
+    !Boolean(files.length > 0) || !validateContent(blog.content);
 
   return (
     <Box>
@@ -70,7 +71,7 @@ const BlogForm = ({ content, selectedBlog, setMode }) => {
         <label>Title</label>
         <Input
           mt={2}
-          value={title}
+          value={blog.title || ""}
           onChange={(e) => setTitle(e.target.value)}
         />
         <Text mt={1} fontSize="xs" color="gray.400">
@@ -82,7 +83,7 @@ const BlogForm = ({ content, selectedBlog, setMode }) => {
         <label>Description</label>
         <Textarea
           mt={2}
-          value={description}
+          value={blog.description || ""}
           onChange={(e) => setDescription(e.target.value)}
         />
         <Text mt={1} fontSize="xs" color="gray.400">
@@ -97,7 +98,7 @@ const BlogForm = ({ content, selectedBlog, setMode }) => {
             options={options}
             isMulti
             placeholder="Add category"
-            value={categories}
+            value={blog.categories || []}
             onChange={setCategories}
           />
         </Box>
@@ -106,16 +107,20 @@ const BlogForm = ({ content, selectedBlog, setMode }) => {
         </Text>
       </Box>
 
-      <Flex justifyContent="end">
-        <Button mr={4}>Cancel</Button>
-        <Button
-          isDisabled={publishDisabled}
-          colorScheme="brand"
-          onClick={onPubish}
-        >
-          Publish
-        </Button>
-      </Flex>
+      {blog.content && (
+        <Flex justifyContent="end">
+          <Button mr={4} onClick={onFinish}>
+            Cancel
+          </Button>
+          <Button
+            isDisabled={publishDisabled}
+            colorScheme="brand"
+            onClick={onPubish}
+          >
+            {blog.edit ? "Publish Edit" : "Publish"}
+          </Button>
+        </Flex>
+      )}
 
       <Modal isOpen={isLoading} isCentered>
         <ModalOverlay />

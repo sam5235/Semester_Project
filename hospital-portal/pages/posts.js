@@ -6,19 +6,19 @@ import {
   GridItem,
   useColorModeValue,
 } from "@chakra-ui/react";
-import BlogEditor from "../components/BlogEditor";
+
 import PostTable from "../components/PostTable";
 import BlogForm from "../components/forms/BlogForm";
+import TinyEditor from "../components/TinyEditor";
 
 const PostsPage = () => {
-  const [blog, setBlog] = useState();
-  const [content, setContent] = useState({});
-  const [mode, setMode] = useState("TABLE");
+  const [blog, setBlog] = useState({});
+  const [files, setFiles] = useState([]);
 
   return (
     <Grid
       templateColumns="repeat(12, 1fr)"
-      height="calc(100vh - 50px)"
+      height="calc(100vh - 100px)"
       p={5}
       gap={3}
     >
@@ -30,14 +30,20 @@ const PostsPage = () => {
           top="80px"
         >
           <CardBody>
-            <BlogForm content={content} />
+            <BlogForm
+              blog={blog}
+              setBlog={setBlog}
+              files={files}
+              setFiles={setFiles}
+            />
           </CardBody>
         </Card>
       </GridItem>
       <GridItem colSpan={8}>
-        {mode === "TABLE" && <PostTable setMode={setMode} />}
-        {(mode === "EDIT" || mode === "ADD") && (
-          <BlogEditor content={content} setContent={setContent} />
+        {blog.title !== undefined ? (
+          <TinyEditor blog={blog} setBlog={setBlog} />
+        ) : (
+          <PostTable setBlogToEdit={setBlog} setFiles={setFiles} />
         )}
       </GridItem>
     </Grid>

@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 import {
   Box,
   Button,
@@ -7,7 +8,6 @@ import {
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { SlCloudUpload, SlClose } from "react-icons/sl";
 
@@ -15,28 +15,6 @@ const thumbsContainer = {
   display: "flex",
   flexDirection: "row",
   flexWrap: "wrap",
-};
-
-const thumb = {
-  display: "inline-flex",
-  borderRadius: 2,
-  border: "1px solid #eaeaea",
-  width: 220,
-  height: 220,
-  padding: 4,
-  boxSizing: "border-box",
-};
-
-const thumbInner = {
-  display: "flex",
-  minWidth: 0,
-  overflow: "hidden",
-};
-
-const img = {
-  display: "block",
-  width: "auto",
-  height: "100%",
 };
 
 function ImageDrop({ files, setFiles }) {
@@ -56,24 +34,24 @@ function ImageDrop({ files, setFiles }) {
   });
 
   const thumbs = files.map((file) => (
-    <Box style={thumb} key={file.name} position="relative">
-      <Box style={thumbInner}>
-        <Image
-          src={file.preview}
-          style={img}
-          // Revoke data uri after image is loaded
-          onLoad={() => {
-            URL.revokeObjectURL(file.preview);
-          }}
-        />
-      </Box>
+    <Box key={file.name} position="relative">
+      <Image
+        src={file.preview}
+        w="100%"
+        maxH={300}
+        onLoad={() => {
+          URL.revokeObjectURL(file.preview);
+        }}
+      />
       <Button
         onClick={() => setFiles([])}
         colorScheme="red"
         position="absolute"
+        boxShadow="2xl"
+        rounded="3xl"
         p={0}
-        right="0px"
-        top={0}
+        right={2}
+        top={2}
       >
         <Icon as={SlClose} fontSize="lg" color="white" />
       </Button>
@@ -81,13 +59,12 @@ function ImageDrop({ files, setFiles }) {
   ));
 
   useEffect(() => {
-    // Make sure to revoke the data uris to avoid memory leaks, will run on unmount
     return () => files.forEach((file) => URL.revokeObjectURL(file.preview));
   }, []);
 
   return (
     <Box
-      border="2px"
+      border={files.length ? 0 : 2}
       borderStyle="dashed"
       borderColor="gray.500"
       borderRadius={5}
@@ -99,13 +76,22 @@ function ImageDrop({ files, setFiles }) {
         borderColor: "blue.500",
         bg: useColorModeValue("blue.50", "gray.900"),
       }}
-      p={5}
+      p={files.length ? 0 : 5}
       h={250}
     >
-      <Box {...getRootProps({ className: "dropzone" })}>
+      <Box
+        {...getRootProps({ className: "dropzone" })}
+        h="100%"
+        cursor="pointer"
+      >
         <input {...getInputProps()} />
         {thumbs.length === 0 && (
-          <Flex direction="column" justifyContent="center" alignItems="center">
+          <Flex
+            direction="column"
+            justifyContent="center"
+            alignItems="center"
+            height="100%"
+          >
             <Icon as={SlCloudUpload} fontSize="4xl" color="blue.500" mb="2" />
 
             <Text fontSize="xs" textAlign="center" color="gray.500">
@@ -115,7 +101,7 @@ function ImageDrop({ files, setFiles }) {
           </Flex>
         )}
       </Box>
-      <aside style={thumbsContainer}>{thumbs}</aside>
+      <Box sx={thumbsContainer}>{thumbs}</Box>
     </Box>
   );
 }

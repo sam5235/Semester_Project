@@ -3,28 +3,49 @@ import {
   Box,
   Button,
   Checkbox,
-  Divider,
   Flex,
   Icon,
   Image,
   Input,
+  Spinner,
   Stack,
   Table,
-  TableCaption,
   TableContainer,
   Tbody,
   Td,
   Text,
-  Tfoot,
   Th,
   Thead,
   Tr,
+  useColorModeValue,
 } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 import { RiArticleLine, RiAddFill, RiSearch2Line } from "react-icons/ri";
+import { HiPencil } from "react-icons/hi";
 import { useAuth } from "../context/AuthContext";
+import { getBlogs } from "../firebase/blogServices";
+import { EMPTY_BLOG } from "../utils";
+import { query } from "firebase/firestore";
 
-const PostTable = () => {
+const PostTable = ({ setBlogToEdit, setFiles }) => {
   const { user } = useAuth();
+  const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedBlog, setSelectedBlog] = useState();
+  const [query, setQuery] = useState('');
+
+  const fetchBlogs = async () => {
+    const data = await getBlogs();
+    data && setLoading(false);
+    setBlogs(data);
+  };
+
+  const filteredBlogs = blogs.filter((blog) => query === '' || blog.title.toLowerCase().includes(query.toLowerCase()))
+
+  useEffect(() => {
+    fetchBlogs();
+  }, []);
+
   return (
     <Box>
       <Flex
@@ -47,14 +68,42 @@ const PostTable = () => {
         </Flex>
 
         <Flex alignItems="center">
-          <Button variant="solid" colorScheme="brand" rounded="3xl" p="2">
+          {selectedBlog && (
+            <Button
+              variant="solid"
+              colorScheme="brand"
+              rounded="3xl"
+              p="2"
+              mx={2}
+              onClick={() => {
+                setFiles([
+                  {
+                    name: selectedBlog.coverImage,
+                    preview: selectedBlog.coverImage,
+                  },
+                ]);
+                setBlogToEdit({ ...selectedBlog, edit: true });
+              }}
+            >
+              <Icon as={HiPencil} fontSize="xl" color="white" />
+            </Button>
+          )}
+          <Button
+            variant="solid"
+            colorScheme="brand"
+            rounded="3xl"
+            p="2"
+            onClick={() => setBlogToEdit(EMPTY_BLOG)}
+          >
             <Icon as={RiAddFill} fontSize="xl" color="white" />
           </Button>
           <Input
             placeholder="Search..."
             colorScheme="brand"
-            bg="white"
+            bg={useColorModeValue("white", 'gray.900')}
             mx={2}
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
             rounded="3xl"
           />
           <Button variant="solid" colorScheme="brand" rounded="3xl" p="2">
@@ -76,138 +125,68 @@ const PostTable = () => {
             </Tr>
           </Thead>
           <Tbody>
-            <Tr>
-              <Td>
-                <Checkbox w={"20px"} />
-              </Td>
-              <Td>
-                <Flex alignItems="center">
-                  <Image
-                    w="50px"
-                    src="https://nebeb-files.fra1.digitaloceanspaces.com/articles/1634358817716.jpg"
+            {filteredBlogs.map((blog, key) => (
+              <Tr key={key}>
+                <Td>
+                  <Checkbox
+                    w={"20px"}
+                    isChecked={selectedBlog && selectedBlog.id === blog.id}
+                    onChange={() => {
+                      setSelectedBlog(
+                        selectedBlog && selectedBlog.id === blog.id
+                          ? null
+                          : blog
+                      );
+                    }}
                   />
-                  <Box ml={2} maxW="150px">
-                    <Text>የልብ ሐዘን</Text>
-                    <Text fontSize="x-small" color="gray.500" isTruncated>
-                      ፍቅረኛውን አጥቶ ሐዘን ውስጥ የገባ ሰው የልብ ሕመም
-                    </Text>
-                  </Box>
-                </Flex>
-              </Td>
-              <Td isNumeric>
-                <Text fontSize="sm">5 min</Text>
-              </Td>
-              <Td>
-                <Stack maxW="150px" direction="row">
-                  <Badge colorScheme="blue" fontSize="0.7em">
-                    Success
+                </Td>
+                <Td>
+                  <Flex alignItems="center">
+                    <Image w="50px" src={blog.coverImage} />
+                    <Box ml={2} maxW="150px">
+                      <Text isTruncated>{blog.title}</Text>
+                      <Text fontSize="x-small" color="gray.500" isTruncated>
+                        {blog.description}
+                      </Text>
+                    </Box>
+                  </Flex>
+                </Td>
+                <Td isNumeric>
+                  <Text fontSize="sm">{blog.length.text}</Text>
+                </Td>
+                <Td>
+                  <Stack maxW="150px" direction="row">
+                    {blog.categories.map((category, key) => (
+                      <Badge key={key} colorScheme="blue" fontSize="0.7em">
+                        {category.label}
+                      </Badge>
+                    ))}
+                  </Stack>
+                </Td>
+                <Td>
+                  <Text fontSize="sm">
+                    {new Date(blog.datePublished).toDateString()}
+                  </Text>
+                </Td>
+                <Td>
+                  <Badge
+                    colorScheme={blog.status === 'approved' ? 'green' : 'orange'}
+                    fontSize="0.7em"
+                    textTransform="capitalize"
+                  >
+                    {blog.status}
                   </Badge>
-                  <Badge colorScheme="blue" fontSize="0.7em">
-                    Removed
-                  </Badge>
-                  <Badge colorScheme="blue" fontSize="0.7em">
-                    New
-                  </Badge>
-                </Stack>
-              </Td>
-              <Td>
-                <Text fontSize="sm">{new Date().toDateString()}</Text>
-              </Td>
-              <Td>
-                <Badge colorScheme="green" fontSize="0.7em">
-                  Approved
-                </Badge>
-              </Td>
-            </Tr>
-
-            <Tr>
-              <Td>
-                <Checkbox w={"20px"} />
-              </Td>
-              <Td>
-                <Flex alignItems="center">
-                  <Image
-                    w="50px"
-                    src="https://nebeb-files.fra1.digitaloceanspaces.com/articles/1634358817716.jpg"
-                  />
-                  <Box ml={2} maxW="150px">
-                    <Text>የልብ ሐዘን</Text>
-                    <Text fontSize="x-small" color="gray.500" isTruncated>
-                      ፍቅረኛውን አጥቶ ሐዘን ውስጥ የገባ ሰው የልብ ሕመም
-                    </Text>
-                  </Box>
-                </Flex>
-              </Td>
-              <Td isNumeric>
-                <Text fontSize="sm">5 min</Text>
-              </Td>
-              <Td>
-                <Stack maxW="150px" direction="row">
-                  <Badge colorScheme="blue" fontSize="0.7em">
-                    Success
-                  </Badge>
-                  <Badge colorScheme="blue" fontSize="0.7em">
-                    Removed
-                  </Badge>
-                  <Badge colorScheme="blue" fontSize="0.7em">
-                    New
-                  </Badge>
-                </Stack>
-              </Td>
-              <Td>
-                <Text fontSize="sm">{new Date().toDateString()}</Text>
-              </Td>
-              <Td>
-                <Badge colorScheme="orange" fontSize="0.7em">
-                  Pending
-                </Badge>
-              </Td>
-            </Tr>
-
-            <Tr>
-              <Td>
-                <Checkbox w={"20px"} />
-              </Td>
-              <Td>
-                <Flex alignItems="center">
-                  <Image
-                    w="50px"
-                    src="https://nebeb-files.fra1.digitaloceanspaces.com/articles/1633909857527.jpeg"
-                  />
-                  <Box ml={2} maxW="150px">
-                    <Text isTruncated>የሳሚ ዳን ከፍታ በ"መንገዱ ላይ" ዜማ</Text>
-                    <Text fontSize="x-small" color="gray.500" isTruncated>
-                      ጥሩ ይዘት ያለው ይህ ዘፈን፤ በግጥሙ ስንኛት ውስጥ ብዙ ውብ ትርጉሞችን የያዙ ማራኪ ቃላት
-                      አሉት
-                    </Text>
-                  </Box>
-                </Flex>
-              </Td>
-              <Td isNumeric>
-                <Text fontSize="sm">5 min</Text>
-              </Td>
-              <Td>
-                <Stack maxW="150px" direction="row">
-                  <Badge colorScheme="blue" fontSize="0.7em">
-                    Removed
-                  </Badge>
-                  <Badge colorScheme="blue" fontSize="0.7em">
-                    Success
-                  </Badge>
-                </Stack>
-              </Td>
-              <Td>
-                <Text fontSize="sm">{new Date().toDateString()}</Text>
-              </Td>
-              <Td>
-                <Badge colorScheme="red" fontSize="0.7em">
-                  Failed
-                </Badge>
-              </Td>
-            </Tr>
+                </Td>
+              </Tr>
+            ))}
           </Tbody>
         </Table>
       </TableContainer>
+      {loading && (
+        <Flex w="100%" justifyContent="center" my={5}>
+          <Spinner color="blue.400" size="lg" />
+        </Flex>
+      )}
     </Box>
   );
 };

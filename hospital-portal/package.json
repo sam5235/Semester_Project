@@ -14,9 +14,9 @@
     "@emotion/react": "11",
     "@emotion/styled": "11",
     "@next/font": "13.0.7",
-    "@tiptap/pm": "^2.0.0-beta.217",
+    "@tinymce/tinymce-react": "^4.3.0",
     "chakra-react-select": "^4.4.3",
-    "dante3": "^1.1.6",
+    "copy-webpack-plugin": "^11.0.0",
     "eslint": "8.30.0",
     "eslint-config-next": "13.0.7",
     "firebase": "^9.15.0",
@@ -28,6 +28,8 @@
     "react-dropzone": "^14.2.3",
     "react-icon": "^1.0.0",
     "react-icons": "^4.7.1",
+    "reading-time": "^1.5.0",
+    "tinymce": "^6.3.1",
     "uuid": "^9.0.0"
   },
   "resolutions": {
