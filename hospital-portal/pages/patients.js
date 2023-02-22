@@ -1,7 +1,4 @@
 import {
-  Card,
-  CardBody,
-  CardFooter,
   Text,
   Button,
   Grid,
@@ -10,28 +7,35 @@ import {
   useColorModeValue,
   Avatar,
   Badge,
-  Divider,
   Stack,
   Heading,
-  ButtonGroup,
   Center,
+  Modal,
+  ModalOverlay,
+  ModalContent,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import PatientForm from "../components/common/patientForm";
 import { getPatients, filterPatients } from "../firebase/patientServices";
 import SearchBar from "../components/common/searchBar";
+import RecordForm from "../components/common/recordForm";
 
 const Patients = () => {
   const [patient, setPatients] = useState([]);
+  const [selected, setSelected] = useState();
   const [value, setValue] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const filter = async () => {
-    console.log(value);
+    setIsLoading(true);
     const Lists = await filterPatients(value);
+    Lists && setIsLoading(false);
     setPatients(Lists);
   };
   const fetchPatients = async () => {
+    setIsLoading(true);
     const Lists = await getPatients();
+    Lists && setIsLoading(false);
     setPatients(Lists);
   };
   const addPatient = (p) => {
@@ -39,8 +43,8 @@ const Patients = () => {
   };
 
   const handleChanges = (e) => {
-      setValue(e.target.value);
-      if (e.target.value === "") fetchPatients();
+    setValue(e.target.value);
+    if (e.target.value === "") fetchPatients();
   };
   useEffect(() => {
     fetchPatients();
@@ -60,6 +64,7 @@ const Patients = () => {
               onChange={handleChanges}
               value={value}
               filter={filter}
+              isLoading={isLoading}
             />
           </Box>
         </GridItem>
@@ -68,73 +73,76 @@ const Patients = () => {
       <Grid
         templateRows="repeat(2, 1fr)"
         templateColumns="repeat(12, 1fr)"
+        height="1200px"
         gap={4}
       >
-        <GridItem colSpan={9}>
+        <GridItem colSpan={9} height="2000px">
           <Grid gap={4} templateColumns="repeat(6, 1fr)">
             {patient.map((user) => (
               <GridItem key={user.id} colSpan="2">
-                <Card
-                  boxShadow="dark-lg"
-                  bg={useColorModeValue("white", "gray.800")}
-                  maxW="sm"
-                >
-                  <CardBody>
-                    <Center>
-                      <Avatar size="lg" mb={3} src="" name={user.name} />
-                    </Center>
-                    <Stack direction="row">
+                <Center pb={6}>
+                  <Box
+                    maxW={'320px'}
+                    w={'full'}
+                    bg={useColorModeValue('white', 'gray.900')}
+                    boxShadow={'2xl'}
+                    rounded={'lg'}
+                    p={6}
+                    textAlign={'center'}>
+                    <Avatar
+                      size={'xl'}
+                      src=""
+                      name={user.name}
+                      mb={4}
+                    />
+                    <Heading fontSize={'2xl'} fontFamily={'body'} textTransform="capitalize">
+                      {user.name}
+                    </Heading>
+                    <Text fontWeight={600} color={'gray.500'} mb={4}>
+                      {user.phone}
+                    </Text>
+
+                    <Stack align={'center'} justify={'center'} direction={'row'} mt={6}>
                       {user.history.map((field) => (
-                        <Badge colorScheme="red">{field}</Badge>
+                        <Badge
+                          px={2}
+                          py={1}
+                          bg={useColorModeValue('gray.50', 'gray.800')}
+                          fontWeight={'400'}>{field}</Badge>
                       ))}
                     </Stack>
-                    <Divider />
-                    <Stack mt="6" spacing="3">
-                      <Heading color="brand.400" size="md">
-                        {user.name}
-                      </Heading>
 
-                      <Text>
-                        <Text as="b" fontSize="sm">
-                          Age:
-                        </Text>{" "}
-                        <Text as="b" fontSize="xs">
-                          {user.age}
-                        </Text>
-                      </Text>
-                      <Text>
-                        <Text as="b" fontSize="sm">
-                          Med-Id:
-                        </Text>{" "}
-                        <Text as="b" fontSize="xs">
-                          {user.medid}
-                        </Text>
-                      </Text>
-                      <Text>
-                        <Text as="b" fontSize="sm">
-                          Phone:
-                        </Text>{" "}
-                        <Text as="b" fontSize="xs">
-                          {user.phone}
-                        </Text>
-                      </Text>
-                    </Stack>
-                  </CardBody>
-                  <Divider />
-                  <CardFooter>
-                    <ButtonGroup spacing="2">
-                      <Button colorScheme="brand" size="xs">
-                        Add Records
+                    <Stack mt={8} direction={'row'} spacing={4}>
+                      <Button
+                        flex={1}
+                        fontSize={'sm'}
+                        rounded={'full'}
+                        onClick={() => setSelected(user)}
+                        _focus={{
+                          bg: 'gray.200',
+                        }}>
+                        Add Record
                       </Button>
-                      <Button size="xs" colorScheme="brand">
+                      <Button
+                        flex={1}
+                        fontSize={'sm'}
+                        rounded={'full'}
+                        bg={'blue.400'}
+                        color={'white'}
+                        boxShadow={
+                          '0px 1px 25px -5px rgb(66 153 225 / 48%), 0 10px 10px -5px rgb(66 153 225 / 43%)'
+                        }
+                        _hover={{
+                          bg: 'blue.500',
+                        }}
+                        _focus={{
+                          bg: 'blue.500',
+                        }}>
                         View Detail
                       </Button>
-                      <Button size="xs" colorScheme="brand">
-                        Edit
-                      </Button>
-                    </ButtonGroup>
-                  </CardFooter>
-                </Card>
+                    </Stack>
+                  </Box>
+                </Center>
               </GridItem>
             ))}
           </Grid>
@@ -144,6 +152,14 @@ const Patients = () => {
           <PatientForm addPatient={addPatient} />
         </GridItem>
       </Grid>
+      <Modal isOpen={Boolean(selected)} onClose={() => setSelected()}>
+        <ModalOverlay />
+        <ModalContent>
+          {Boolean(selected) && (
+            <RecordForm id={selected.id} onCancel={() => setSelected()} />
+          )}
+        </ModalContent>
+      </Modal>
     </Box>
   );
 };

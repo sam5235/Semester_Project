@@ -10,18 +10,18 @@ import {
   Toast,
   useColorModeValue,
 } from "@chakra-ui/react";
-import {  Select } from "chakra-react-select";
+import { Select } from "chakra-react-select";
 import { useState } from "react";
 import { addRecord } from "../../firebase/recordService";
 import datas from "../../mocks/diseases.json"
 
-const RecordForm = ({onCancel, id}) => {
-  const options = datas.map((data) => ({label: data, value: data}))
+const RecordForm = ({ onCancel, id }) => {
+  const options = datas.map((data) => ({ label: data, value: data }))
   const [doctor, setDoctor] = useState("");
   const [diseases, setDiseases] = useState([]);
   const [persc, setPersc] = useState("");
-  const [desc, setDesc ] = useState("");
-  const[isLoading, setIsLoading] = useState(false);
+  const [desc, setDesc] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const handleOnClose = () => {
     setIsLoading(false);
     Toast({
@@ -30,7 +30,7 @@ const RecordForm = ({onCancel, id}) => {
       duration: 9000,
       isClosable: true,
     });
- 
+
     onCancel();
   };
 
@@ -47,18 +47,18 @@ const RecordForm = ({onCancel, id}) => {
   const handleOnAdd = () => {
     const record = {
       doctor,
-      diseases: diseases.map(d=>d.value),
+      diseases: diseases.map(d => d.value),
       persc,
       desc,
       patientId: id
     }
-    
+
     setIsLoading(true);
     addRecord(record, handleOnClose, onFail);
-    
+
   };
 
-  
+
 
   return (
     <Box
@@ -72,7 +72,7 @@ const RecordForm = ({onCancel, id}) => {
       </Heading>
       <FormControl mb={3}>
         <FormLabel fontSize="sm">Doctor Name</FormLabel>
-        <Input onChange={(e)=>{setDoctor(e.target.value)}} border="solid" type="text" />
+        <Input onChange={(e) => { setDoctor(e.target.value) }} type="text" />
       </FormControl>
       <FormControl mb={3}>
         <FormLabel fontSize="sm">Diagnosed Diseases</FormLabel>
@@ -80,32 +80,32 @@ const RecordForm = ({onCancel, id}) => {
           options={options}
           isMulti
           bg={useColorModeValue("white", "gray.800")}
-          onChange={(e)=>{setDiseases(e)}}
+          onChange={(e) => { setDiseases(e) }}
         />
-        
+
       </FormControl>
 
       <FormControl mb={3}>
         <FormLabel fontSize="sm">Perscriptions</FormLabel>
-        <Textarea onChange={(e)=>{setPersc(e.target.value)}} border="solid" />
+        <Textarea onChange={(e) => { setPersc(e.target.value) }} />
       </FormControl>
       <FormControl mb={3}>
         <FormLabel fontSize="sm">Description</FormLabel>
-        <Textarea onChange={(e)=>{setDesc(e.target.value)}} border="solid" />
+        <Textarea onChange={(e) => { setDesc(e.target.value) }} />
       </FormControl>
       <Button
-         isLoading={isLoading}
+        isLoading={isLoading}
         onClick={handleOnAdd}
         width="25%"
         colorScheme="brand"
         mr={5}
-        
+
       >
         Recorded
       </Button>
       <Button
         // isLoading={isLoading}
-        onClick = {onCancel}
+        onClick={onCancel}
         width="25%"
         colorScheme="brand"
       >

@@ -9,7 +9,7 @@ import {
 import { useRouter } from "next/router";
 
 const linkButtons = [
-  { name: "Home", icon: <Icon as={GoHome} color="blue.500" />, href: "/" },
+  // { name: "Home", icon: <Icon as={GoHome} color="blue.500" />, href: "/" },
   {
     name: "Patients",
     icon: <Icon as={GoOrganization} color="blue.500" />,

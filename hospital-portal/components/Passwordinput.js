@@ -12,6 +12,8 @@ const PasswordInput = (props) => {
         pr="4.5rem"
         type={show ? "text" : "password"}
         placeholder="Password"
+        border="1px solid"
+        borderColor="brand.200"
         {...props}
       />
       <InputRightElement width="fit-content" mr="2">

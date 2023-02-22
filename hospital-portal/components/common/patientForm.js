@@ -31,7 +31,7 @@ const PatientForm = ({ addPatient }) => {
   const toast = useToast();
 
   const handleOnClose = (patient) => {
-    addPatient(patient);
+    addPatient && addPatient(patient);
     setIsLoading(false);
     toast({
       title: "Registered Successfully",
@@ -72,16 +72,17 @@ const PatientForm = ({ addPatient }) => {
       height,
       email,
       password,
-      history : []
+      history: []
     };
     setIsLoading(true);
     RegisterPatient(List, handleOnClose, onFail);
   };
   return (
     <Box
-      sx={{ position: "sticky", top: "100px" }}
-      boxShadow="dark-lg"
+      boxShadow="2xl"
       bg={useColorModeValue("white", "gray.800")}
+      position="sticky"
+      top="80px"
       p={6}
     >
       <Heading mb={3} size="md">
@@ -94,7 +95,8 @@ const PatientForm = ({ addPatient }) => {
           onChange={(e) => {
             setName(e.target.value);
           }}
-          border="solid"
+          border="1px solid"
+          borderColor="brand.200"
           type="text"
         />
       </FormControl>
@@ -105,11 +107,13 @@ const PatientForm = ({ addPatient }) => {
           onChange={(e) => {
             setEmail(e.target.value);
           }}
-          border="solid"
+          border="1px solid"
+          borderColor="brand.200"
           type="email"
         />
       </FormControl>
       <FormControl mb={3}>
+        <FormLabel fontSize="sm">Password</FormLabel>
         <PasswordInput
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -122,7 +126,8 @@ const PatientForm = ({ addPatient }) => {
           onChange={(e) => {
             setPhone(e.target.value);
           }}
-          border="solid"
+          border="1px solid"
+          borderColor="brand.200"
           type="number"
         />
       </FormControl>
@@ -133,8 +138,9 @@ const PatientForm = ({ addPatient }) => {
           onChange={(e) => {
             setAddress(e.target.value);
           }}
-          border="solid"
           type="text"
+          border="1px solid"
+          borderColor="brand.200"
         />
       </FormControl>
       <Grid templateColumns="repeat(8, 1fr)" gap={4} mb={3}>
@@ -146,7 +152,8 @@ const PatientForm = ({ addPatient }) => {
               onChange={(e) => {
                 setAge(e.target.value);
               }}
-              border="solid"
+              border="1px solid"
+              borderColor="brand.200"
               type="number"
             />
           </FormControl>
@@ -159,7 +166,8 @@ const PatientForm = ({ addPatient }) => {
               onChange={(e) => {
                 setSex(e.target.value);
               }}
-              border="solid"
+              border="1px solid"
+              borderColor="brand.200"
               type="text"
             />
           </FormControl>
@@ -172,7 +180,8 @@ const PatientForm = ({ addPatient }) => {
               onChange={(e) => {
                 setHeight(e.target.value);
               }}
-              border="solid"
+              border="1px solid"
+              borderColor="brand.200"
               type="number"
             />
           </FormControl>
@@ -185,7 +194,8 @@ const PatientForm = ({ addPatient }) => {
               onChange={(e) => {
                 setWeight(e.target.value);
               }}
-              border="solid"
+              border="1px solid"
+              borderColor="brand.200"
               type="number"
             />
           </FormControl>
