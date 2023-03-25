@@ -76,7 +76,7 @@ export default function Nav() {
                     />
                   </MenuButton>
                   <MenuList alignItems={"center"}>
-                    <br />
+                    {/* <br />
                     <Center>
                       <Avatar
                         size={"2xl"}
@@ -90,9 +90,8 @@ export default function Nav() {
                       <p>Username</p>
                     </Center>
                     <br />
-                    <MenuDivider />
-                    <MenuItem>Your Servers</MenuItem>
-                    <MenuItem>Account Settings</MenuItem>
+                    <MenuDivider /> */}
+                    {/* <MenuItem>Account Settings</MenuItem> */}
                     <MenuItem onClick={logout}>Logout</MenuItem>
                   </MenuList>
                 </Menu>

@@ -45,7 +45,7 @@ const LogIn = () => {
   };
 
   if (user) {
-    router.replace("/");
+    router.replace("/hospital");
     return null;
   }
 

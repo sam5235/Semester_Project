@@ -72,7 +72,7 @@ const HospitalPage = () => {
           >
             <FaRegHospital fontSize={30} />
           </Box>
-          <Text fontSize="4xl">Health Care Centers</Text>
+          <Text fontSize="4xl">Healthcare Centers</Text>
         </Flex>
 
         <Flex mb="5">
