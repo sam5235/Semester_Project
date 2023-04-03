@@ -6,6 +6,7 @@ import {
   where,
   collection,
   query,
+  getDoc,
 } from "firebase/firestore";
 import { secondaryAuth, db, auth } from "../config/firebase";
 
@@ -30,7 +31,12 @@ export const filterAllPatients = async (phone) => {
   return Lists;
 };
 
+export const getPatientById = async (id) => {
+  const patient = await getDoc(doc(db, "patients", id));
+  console.log(patient.data(), id);
+  return patient.data();
 
+}
 
 export const getPatients = async () => {
   const patients = [];

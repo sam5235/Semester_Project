@@ -19,8 +19,10 @@ import PatientForm from "../components/common/patientForm";
 import { getPatients, filterPatients } from "../firebase/patientServices";
 import SearchBar from "../components/common/searchBar";
 import RecordForm from "../components/common/recordForm";
+import { useRouter } from "next/router";
 
 const Patients = () => {
+  const router = useRouter();
   const [patient, setPatients] = useState([]);
   const [selected, setSelected] = useState();
   const [value, setValue] = useState("");
@@ -37,6 +39,7 @@ const Patients = () => {
     const Lists = await getPatients();
     Lists && setIsLoading(false);
     setPatients(Lists);
+
   };
   const addPatient = (p) => {
     if (p !== undefined) setPatients([...patient, p]);
@@ -78,8 +81,8 @@ const Patients = () => {
       >
         <GridItem colSpan={9} height="2000px">
           <Grid gap={4} templateColumns="repeat(6, 1fr)">
-            {patient.map((user) => (
-              <GridItem key={user.id} colSpan="2">
+            {patient.map((user, index) => (
+              <GridItem key={index} colSpan="2">
                 <Center pb={6}>
                   <Box
                     maxW={'320px'}
@@ -103,8 +106,8 @@ const Patients = () => {
                     </Text>
 
                     <Stack align={'center'} justify={'center'} direction={'row'} mt={6}>
-                      {user.history.map((field) => (
-                        <Badge
+                      {user.history.map((field, index) => (
+                        <Badge key={index}
                           px={2}
                           py={1}
                           bg={useColorModeValue('gray.50', 'gray.800')}
@@ -124,6 +127,7 @@ const Patients = () => {
                         Add Record
                       </Button>
                       <Button
+                        onClick={() => { router.replace(`/records/${user.id}`) }}
                         flex={1}
                         fontSize={'sm'}
                         rounded={'full'}

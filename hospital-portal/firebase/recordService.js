@@ -4,8 +4,32 @@ import {
   collection,
   updateDoc,
   arrayUnion,
+  getDoc,
+  query,
+  where,
+  getDocs,
 } from "firebase/firestore";
 import { auth, db } from "../config/firebase";
+
+const parseRecord = async (data) => {
+  const getHospitalName = await getDoc(doc(db, "health_centers", data.data().hospital));
+  const getPhone = await getDoc(doc(db, "patients", data.data().patientId))
+  return { ...data.data(), Hospital_name: getHospitalName.data().name, Patient_phone: getPhone.data().phone }
+}
+
+export const getRecords = async (patientId) => {
+  const records = [];
+  const ourQ = query(
+    collection(db, "records"),
+    where("patientId", "==", patientId)
+  );
+  const querySnapshot = await getDocs(ourQ);
+  for (const data of querySnapshot.docs) {
+
+    records.push(await parseRecord(data));
+  };
+  return records;
+};
 
 export const addRecord = async (record, onFinish, onFail) => {
   console.log(record);
