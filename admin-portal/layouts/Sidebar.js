@@ -16,7 +16,7 @@ import { MdOutlineSick, MdOutlineArticle } from "react-icons/md";
 import NextLink from "next/link";
 
 const LinkItems = [
-  { name: "Home", icon: FiHome, href: "/" },
+  // { name: "Home", icon: FiHome, href: "/" },
   { name: "Health Centers", icon: FaRegHospital, href: "/hospital" },
   { name: "Users", icon: MdOutlineSick },
   { name: "Posts", icon: MdOutlineArticle },
