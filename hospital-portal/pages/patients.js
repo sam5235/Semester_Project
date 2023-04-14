@@ -127,7 +127,7 @@ const Patients = () => {
                         Add Record
                       </Button>
                       <Button
-                        onClick={() => { router.replace(`/records/${user.id}`) }}
+                        onClick={() => { router.push(`/records/${user.id}`) }}
                         flex={1}
                         fontSize={'sm'}
                         rounded={'full'}
