@@ -20,8 +20,13 @@ import { getPatients, filterPatients } from "../firebase/patientServices";
 import SearchBar from "../components/common/searchBar";
 import RecordForm from "../components/common/recordForm";
 import { useRouter } from "next/router";
+import {useDispatch, useSelector} from 'react-redux'
+import { addPatients } from "../redux/actions";
+
 
 const Patients = () => {
+  const dispatch = useDispatch();
+  const patients = useSelector(store => store.patientsPage);
   const router = useRouter();
   const [patient, setPatients] = useState([]);
   const [selected, setSelected] = useState();
@@ -38,7 +43,7 @@ const Patients = () => {
     setIsLoading(true);
     const Lists = await getPatients();
     Lists && setIsLoading(false);
-    setPatients(Lists);
+    dispatch(addPatients(Lists));
 
   };
   const addPatient = (p) => {
@@ -50,6 +55,7 @@ const Patients = () => {
     if (e.target.value === "") fetchPatients();
   };
   useEffect(() => {
+    console.log('herre');
     fetchPatients();
   }, []);
 
@@ -81,7 +87,7 @@ const Patients = () => {
       >
         <GridItem colSpan={9} height="2000px">
           <Grid gap={4} templateColumns="repeat(6, 1fr)">
-            {patient.map((user, index) => (
+            {patients.map((user, index) => (
               <GridItem key={index} colSpan="2">
                 <Center pb={6}>
                   <Box
