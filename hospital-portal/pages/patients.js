@@ -23,7 +23,6 @@ import { useRouter } from "next/router";
 import {useDispatch, useSelector} from 'react-redux'
 import { addPatients } from "../redux/actions";
 
-
 const Patients = () => {
   const dispatch = useDispatch();
   const patients = useSelector(store => store.patientsPage);
