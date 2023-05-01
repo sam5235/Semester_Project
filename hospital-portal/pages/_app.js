@@ -4,6 +4,7 @@ import {Provider} from 'react-redux';
 import Router, { useRouter } from "next/router";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
+import "react-big-calendar/lib/css/react-big-calendar.css";
 
 import "../styles/globals.css";
 import theme from "../theme/theme";
