@@ -67,7 +67,7 @@ const AddRecords = () => {
         <ModalOverlay />
         <ModalContent>
           {selected !== null && (
-            <RecordForm id={selected.id} onCancel={cancelPatient} />
+            <RecordForm patient={selected} onCancel={cancelPatient} />
           )}
           {selected === null && (
             <SearchBar onChange={handleChange} isLoading={isLoading} />

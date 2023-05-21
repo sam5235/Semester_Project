@@ -14,14 +14,27 @@ import { Select } from "chakra-react-select";
 import { useState } from "react";
 import { addRecord } from "../../firebase/recordService";
 import datas from "../../mocks/diseases.json"
+import { useDispatch, useSelector } from "react-redux";
+import { addPatient as addSinglePatient } from "../../redux/actions";
 
-const RecordForm = ({ onCancel, id }) => {
+const RecordForm = ({ onCancel, patient }) => {
+  const dispatch = useDispatch();
+  const patients = useSelector(store => store.patientsPage);
+
   const options = datas.map((data) => ({ label: data, value: data }))
   const [doctor, setDoctor] = useState("");
   const [diseases, setDiseases] = useState([]);
   const [persc, setPersc] = useState("");
   const [desc, setDesc] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+ const addPatient = (patient) => {
+   if(patients.findIndex((p)=>p.id === patient.id) === -1){
+        dispatch(addSinglePatient(patient));
+   }
+
+ }
+
   const handleOnClose = () => {
     setIsLoading(false);
     Toast({
@@ -30,7 +43,7 @@ const RecordForm = ({ onCancel, id }) => {
       duration: 9000,
       isClosable: true,
     });
-
+    addPatient(patient);
     onCancel();
   };
 
@@ -50,11 +63,12 @@ const RecordForm = ({ onCancel, id }) => {
       diseases: diseases.map(d => d.value),
       persc,
       desc,
-      patientId: id
+      patientId: patient.id
     }
 
     setIsLoading(true);
     addRecord(record, handleOnClose, onFail);
+    
 
   };
 

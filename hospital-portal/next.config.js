@@ -3,7 +3,7 @@ const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 
 const nextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: false,
   swcMinify: true,
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
     config.plugins.push(

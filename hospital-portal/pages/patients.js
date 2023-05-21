@@ -21,18 +21,22 @@ import SearchBar from "../components/common/searchBar";
 import RecordForm from "../components/common/recordForm";
 import { useRouter } from "next/router";
 import {useDispatch, useSelector} from 'react-redux'
-import { addPatients } from "../redux/actions";
+import { addPatients,addPatient as addSinglePatient } from "../redux/actions";
 
 
 const Patients = () => {
   const dispatch = useDispatch();
-  const patients = useSelector(store => store.patientsPage);
+ const patients = useSelector(store => store.patientsPage);
   const router = useRouter();
-  const [patient, setPatients] = useState([]);
   const [selected, setSelected] = useState();
   const [value, setValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  const backColor = useColorModeValue('white', 'gray.900');
+  const badgeColor = useColorModeValue('gray.50', 'gray.800');
+  const setPatients = (List) =>{
+    return dispatch(addPatients(List));
+  }
   const filter = async () => {
     setIsLoading(true);
     const Lists = await filterPatients(value);
@@ -43,19 +47,18 @@ const Patients = () => {
     setIsLoading(true);
     const Lists = await getPatients();
     Lists && setIsLoading(false);
-    dispatch(addPatients(Lists));
+    setPatients(Lists);
 
   };
-  const addPatient = (p) => {
-    if (p !== undefined) setPatients([...patient, p]);
-  };
-
+  
   const handleChanges = (e) => {
     setValue(e.target.value);
     if (e.target.value === "") fetchPatients();
   };
+
+  const sortedPatients = patients.sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+
   useEffect(() => {
-    console.log('herre');
     fetchPatients();
   }, []);
 
@@ -87,13 +90,13 @@ const Patients = () => {
       >
         <GridItem colSpan={9} height="2000px">
           <Grid gap={4} templateColumns="repeat(6, 1fr)">
-            {patients.map((user, index) => (
+            {sortedPatients.map((user, index) => (
               <GridItem key={index} colSpan="2">
                 <Center pb={6}>
                   <Box
                     maxW={'320px'}
                     w={'full'}
-                    bg={useColorModeValue('white', 'gray.900')}
+                    bg={backColor}
                     boxShadow={'2xl'}
                     rounded={'lg'}
                     p={6}
@@ -116,7 +119,7 @@ const Patients = () => {
                         <Badge key={index}
                           px={2}
                           py={1}
-                          bg={useColorModeValue('gray.50', 'gray.800')}
+                          bg={badgeColor}
                           fontWeight={'400'}>{field}</Badge>
                       ))}
                     </Stack>
@@ -159,14 +162,14 @@ const Patients = () => {
         </GridItem>
 
         <GridItem colSpan={3}>
-          <PatientForm addPatient={addPatient} />
+          <PatientForm  />
         </GridItem>
       </Grid>
       <Modal isOpen={Boolean(selected)} onClose={() => setSelected()}>
         <ModalOverlay />
         <ModalContent>
           {Boolean(selected) && (
-            <RecordForm id={selected.id} onCancel={() => setSelected()} />
+            <RecordForm patient={selected} onCancel={() => setSelected()} />
           )}
         </ModalContent>
       </Modal>

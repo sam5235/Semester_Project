@@ -3,7 +3,7 @@ import {
   Box,
   Image,
   Button,
-  Container,
+  Container, 
   Menu,
   MenuList,
   MenuItem,
@@ -77,7 +77,7 @@ const Navbar = () => {
             <Modal isOpen={isForm} onClose={closeForm}>
               <ModalOverlay />
               <ModalContent>
-                <PatientForm />
+                <PatientForm onClose={closeForm}/>
               </ModalContent>
             </Modal>
 

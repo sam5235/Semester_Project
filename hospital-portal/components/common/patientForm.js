@@ -14,9 +14,11 @@ import {
 import React, { useState } from "react";
 import { RegisterPatient } from "../../firebase/patientServices";
 import PasswordInput from "../Passwordinput";
+import { useDispatch } from "react-redux";
+import { addPatient as addSinglePatient } from "../../redux/actions";
 
-const PatientForm = ({ addPatient }) => {
-  const { onClose } = useDisclosure();
+const PatientForm = ({ onClose = () => {} }) => {
+  const dispatch = useDispatch();
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [age, setAge] = useState("");
@@ -27,6 +29,13 @@ const PatientForm = ({ addPatient }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  const addPatient = (p) => {
+    if (p !== undefined) {
+      dispatch(addSinglePatient(p));
+      onClose();
+    }
+  };
 
   const toast = useToast();
 
@@ -72,7 +81,7 @@ const PatientForm = ({ addPatient }) => {
       height,
       email,
       password,
-      history: []
+      history: [],
     };
     setIsLoading(true);
     RegisterPatient(List, handleOnClose, onFail);
