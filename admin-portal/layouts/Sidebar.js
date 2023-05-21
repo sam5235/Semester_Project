@@ -14,12 +14,15 @@ import { FiHome, FiMenu } from "react-icons/fi";
 import { FaRegHospital } from "react-icons/fa";
 import { MdOutlineSick, MdOutlineArticle } from "react-icons/md";
 import NextLink from "next/link";
+import { useRouter } from "next/router";
+
+import Stats from "../components/Stats";
 
 const LinkItems = [
   // { name: "Home", icon: FiHome, href: "/" },
-  { name: "Health Centers", icon: FaRegHospital, href: "/hospital" },
-  { name: "Users", icon: MdOutlineSick },
-  { name: "Posts", icon: MdOutlineArticle },
+  { name: "Healthcares", icon: FaRegHospital, href: "/hospital" },
+  { name: "Patients", icon: MdOutlineSick, href: "/patients" },
+  { name: "Blogs", icon: MdOutlineArticle },
 ];
 
 export default function Sidebar({ children }) {
@@ -45,7 +48,8 @@ export default function Sidebar({ children }) {
       </Drawer>
       {/* mobilenav */}
       <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} />
-      <Box ml={{ base: 0, md: 60 }} p="4">
+      <Box ml={{ base: 0, md: 200 }} p="4">
+        <Stats />
         {children}
       </Box>
     </Box>
@@ -56,7 +60,7 @@ const SidebarContent = ({ onClose, ...rest }) => {
   return (
     <Box
       bg={useColorModeValue("white", "gray.900")}
-      w={{ base: "full", md: 60 }}
+      w={{ base: "full", md: 200 }}
       pos="fixed"
       h="full"
       pt="4"
@@ -72,6 +76,9 @@ const SidebarContent = ({ onClose, ...rest }) => {
 };
 
 const NavItem = ({ icon, href, children, ...rest }) => {
+  const router = useRouter();
+  const path = router.pathname;
+
   return (
     <NextLink
       href={href || "#"}
@@ -85,6 +92,7 @@ const NavItem = ({ icon, href, children, ...rest }) => {
         borderRadius="lg"
         role="group"
         cursor="pointer"
+        bg={path === href ? "blackAlpha.100" : ""}
         _hover={{
           bg: "brand.400",
           color: "white",

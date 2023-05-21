@@ -8,6 +8,7 @@ import {
   Grid,
   GridItem,
   IconButton,
+  Image,
   Input,
   InputGroup,
   InputLeftElement,
@@ -26,8 +27,10 @@ import {
 } from "@chakra-ui/react";
 import { FaRegHospital } from "react-icons/fa";
 import { DeleteIcon, EditIcon, SearchIcon } from "@chakra-ui/icons";
+
 import { getHealthCareCenters } from "../firebase/healthServices";
 import AddHealthcare from "../components/forms/AddHealthcare";
+import Stats from "../components/Stats";
 
 const HospitalPage = () => {
   const [searchInput, setSearchInput] = useState("");
@@ -83,7 +86,7 @@ const HospitalPage = () => {
           >
             <FaRegHospital fontSize={30} />
           </Box>
-          <Text fontSize="4xl">Registered Healthcares</Text>
+          <Text fontSize="4xl">Healthcares</Text>
         </Flex>
 
         <Flex mb="5">
@@ -158,9 +161,9 @@ const HospitalPage = () => {
                 </Tr>
               </Thead>
               <Tbody w="full">
-                {filteredCenters.map((center) => {
+                {filteredCenters.map((center, key) => {
                   return (
-                    <Tr key={center.id}>
+                    <Tr key={key}>
                       <Td>
                         <Checkbox />
                       </Td>
@@ -178,6 +181,12 @@ const HospitalPage = () => {
       <GridItem colSpan={2} position="sticky" top={70}>
         <Card bg="chakra-body-bg" boxShadow="xl">
           <CardBody>
+            <Box mb={2} justifyContent="center" display="flex">
+              <Image src={"/add-healthcare.png"} w={"80%"} />
+            </Box>
+            <Text fontSize="xl" fontWeight="semibold">
+              Add Healthcare Center
+            </Text>
             <AddHealthcare />
           </CardBody>
         </Card>

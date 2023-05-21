@@ -27,7 +27,7 @@ export default function Nav() {
   return (
     <>
       <Box
-        bg={useColorModeValue("brand.700", "gray.900")}
+        bg={useColorModeValue("brand.500", "gray.900")}
         position="fixed"
         top="0"
         width="100%"

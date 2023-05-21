@@ -7,7 +7,7 @@ const Layout = ({ children }) => {
   return (
     <Box bg={useColorModeValue("gray.50", "gray.800")}>
       <Navbar />
-      <Container maxW="9xl" pt={16}>
+      <Container maxW="8xl" pt={16}>
         <Sidebar>{children}</Sidebar>
       </Container>
     </Box>
