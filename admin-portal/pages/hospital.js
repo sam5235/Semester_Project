@@ -1,13 +1,10 @@
 import { useEffect, useState } from "react";
 import {
   Box,
-  Button,
   Card,
   CardBody,
   Checkbox,
-  Divider,
   Flex,
-  FormControl,
   Grid,
   GridItem,
   IconButton,
@@ -22,7 +19,6 @@ import {
   Tbody,
   Td,
   Text,
-  Tfoot,
   Th,
   Thead,
   Tr,
@@ -31,25 +27,41 @@ import {
 import { FaRegHospital } from "react-icons/fa";
 import { DeleteIcon, EditIcon, SearchIcon } from "@chakra-ui/icons";
 import { getHealthCareCenters } from "../firebase/healthServices";
+import AddHealthcare from "../components/forms/AddHealthcare";
 
 const HospitalPage = () => {
-  const [name, setName] = useState("");
-  const [address, setAddress] = useState("");
-  const [type, setType] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
+  const [selectedType, setSelectedType] = useState("all");
+  const [selectedSort, setSelectedSort] = useState("none");
   const [healthCenters, setHealthCenters] = useState([]);
   const [isTableLoading, setIsTableLoading] = useState(true);
 
-  const test = async () => {
+  const fetchHealthcares = async () => {
     const healthCenters = await getHealthCareCenters();
     setHealthCenters(healthCenters);
     setIsTableLoading(false);
   };
 
+  const sorrtedHealthcares = healthCenters.slice().sort((a, b) => {
+    if (!selectedSort || selectedSort === "none") {
+      return 0;
+    }
+    return a[selectedSort].localeCompare(b[selectedSort]);
+  });
+
+  const lists =
+    !selectedSort || selectedSort === "none"
+      ? healthCenters
+      : sorrtedHealthcares;
+
+  const filteredCenters = lists.filter(
+    (h) =>
+      h.name.toLowerCase().includes(searchInput.toLowerCase()) &&
+      (selectedType === "all" || h.type === selectedType)
+  );
+
   useEffect(() => {
-    test();
+    fetchHealthcares();
   }, []);
 
   return (
@@ -61,7 +73,6 @@ const HospitalPage = () => {
       <GridItem colSpan={4}>
         <Flex mb={5} alignItems="center">
           <Box
-            // h="0px"
             p="2"
             bg={useColorModeValue("white", "gray.900")}
             border="1px"
@@ -72,25 +83,30 @@ const HospitalPage = () => {
           >
             <FaRegHospital fontSize={30} />
           </Box>
-          <Text fontSize="4xl">Healthcare Centers</Text>
+          <Text fontSize="4xl">Registered Healthcares</Text>
         </Flex>
 
         <Flex mb="5">
           <InputGroup>
-            <InputLeftElement
-              pointerEvents="none"
-              children={<SearchIcon color="gray.300" />}
+            <InputLeftElement pointerEvents="none">
+              <SearchIcon color="gray.300" />
+            </InputLeftElement>
+            <Input
+              placeholder="Search"
+              bg="chakra-body-bg"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
             />
-            <Input placeholder="Search" bg="chakra-body-bg" />
           </InputGroup>
           <Select
             mx="2"
             bg="chakra-body-bg"
             placeholder="Select type"
             maxW="150"
-            // onChange={(e) => setType(e.target.value)}
+            value={selectedType}
+            onChange={(e) => setSelectedType(e.target.value)}
           >
-            <option value="referal">All</option>
+            <option value="all">All</option>
             <option value="referal">Referal</option>
             <option value="hospital">Hospital</option>
             <option value="clinic">Clinic</option>
@@ -102,12 +118,13 @@ const HospitalPage = () => {
             maxW="150"
             bg="chakra-body-bg"
             placeholder="Sort By"
-            // onChange={(e) => setType(e.target.value)}
+            value={selectedSort}
+            onChange={(e) => setSelectedSort(e.target.value)}
           >
-            <option value="referal">none</option>
-            <option value="referal">Name</option>
-            <option value="hospital">Address</option>
-            <option value="clinic">Users</option>
+            <option value="none">None</option>
+            <option value="name">Name</option>
+            <option value="address">Address</option>
+            <option value="type">Type</option>
           </Select>
           <IconButton
             mx="2"
@@ -141,7 +158,7 @@ const HospitalPage = () => {
                 </Tr>
               </Thead>
               <Tbody w="full">
-                {healthCenters.map((center) => {
+                {filteredCenters.map((center) => {
                   return (
                     <Tr key={center.id}>
                       <Td>
@@ -161,60 +178,7 @@ const HospitalPage = () => {
       <GridItem colSpan={2} position="sticky" top={70}>
         <Card bg="chakra-body-bg" boxShadow="xl">
           <CardBody>
-            <Text fontSize="md" color="gray.500" mb="2">
-              Basic Information
-            </Text>
-
-            <FormControl>
-              <Input
-                placeholder="Name of the center"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </FormControl>
-
-            <FormControl mt={4}>
-              <Input
-                placeholder="Address of the center"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-              />
-            </FormControl>
-
-            <FormControl mt={4}>
-              <Select
-                value={type}
-                placeholder="Select type of center"
-                onChange={(e) => setType(e.target.value)}
-              >
-                <option value="referal">Referal Hospital</option>
-                <option value="hospital">Hospital</option>
-                <option value="clinic">Clinic</option>
-                <option value="lab">Laboratory</option>
-                <option value="nursing">Nursing Home</option>
-              </Select>
-            </FormControl>
-
-            <FormControl mt={4}>
-              <Input
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </FormControl>
-
-            <Flex mt={4} justifyContent="flex-end">
-              <Button disabled={isLoading} variant="ghost" mr={3}>
-                Cancel
-              </Button>
-              <Button
-                colorScheme="brand"
-                isLoading={isLoading}
-                // onClick={handleOnAdd}
-              >
-                Edit
-              </Button>
-            </Flex>
+            <AddHealthcare />
           </CardBody>
         </Card>
       </GridItem>
