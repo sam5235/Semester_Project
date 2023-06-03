@@ -1,72 +1,75 @@
+import { Box, Flex, Switch, Text } from "@chakra-ui/react";
 import { useState } from "react";
 
-const TimeSlotSelector = () => {
-  const [selectedTimeSlots, setSelectedTimeSlots] = useState([]);
-
+const TimeSlotSelector = ({selectedTimeSlots, setSelectedTimeSlots }) => {
+ 
   const handleTimeSlotChange = (event) => {
     const { value, checked } = event.target;
 
-    if (checked) {
-      setSelectedTimeSlots([...selectedTimeSlots, value]);
-    } else {
-      setSelectedTimeSlots(selectedTimeSlots.filter((slot) => slot !== value));
-    }
-  };
+    let newTimeSlot = [];
 
+    if (checked) {
+      newTimeSlot = [...selectedTimeSlots, value];
+    } else {
+      newTimeSlot = selectedTimeSlots.filter((slot) => slot !== value);
+    }
+    setSelectedTimeSlots(newTimeSlot);
+  };
   return (
-    <div>
-      <label>Select time slot(s):</label>
-      <div>
-        <input
-          type="checkbox"
-          id="time1"
-          value="8:00 AM - 10:00 AM"
-          checked={selectedTimeSlots.includes("8:00 AM - 10:00 AM")}
+    <Box m={3}>
+      <Text  as="b" >Select time slot(s):</Text>
+      <Flex mt={3} direction="column" gap={2}>
+        <Switch
+          id="time2"
+          value="08:00 AM - 10:00 PM"
+          isChecked={selectedTimeSlots.includes("08:00 AM - 10:00 PM")}
           onChange={handleTimeSlotChange}
-        />
-        <label htmlFor="time1">8:00 AM - 10:00 AM</label>
-      </div>
-      <div>
-        <input
-          type="checkbox"
+        >
+          {" "}
+          08:00 AM - 10:00 PM{" "}
+        </Switch>
+
+        <Switch
           id="time2"
           value="10:00 AM - 12:00 PM"
-          checked={selectedTimeSlots.includes("10:00 AM - 12:00 PM")}
+          isChecked={selectedTimeSlots.includes("10:00 AM - 12:00 PM")}
           onChange={handleTimeSlotChange}
-        />
-        <label htmlFor="time2">10:00 AM - 12:00 PM</label>
-      </div>
-      <div>
-        <input
-          type="checkbox"
-          id="time3"
+        >
+          {" "}
+          10:00 AM - 12:00 PM{" "}
+        </Switch>
+
+        <Switch
+          id="time2"
           value="12:00 PM - 02:00 PM"
-          checked={selectedTimeSlots.includes("12:00 PM - 02:00 PM")}
+          isChecked={selectedTimeSlots.includes("12:00 PM - 02:00 PM")}
           onChange={handleTimeSlotChange}
-        />
-        <label htmlFor="time3">12:00 PM - 02:00 PM</label>
-      </div>
-      <div>
-        <input
-          type="checkbox"
-          id="time3"
+        >
+          {" "}
+          12:00 PM - 02:00 PM
+        </Switch>
+
+        <Switch
+          id="time2"
           value="02:00 PM - 04:00 PM"
-          checked={selectedTimeSlots.includes("02:00 PM - 04:00 PM")}
+          isChecked={selectedTimeSlots.includes("02:00 PM - 04:00 PM")}
           onChange={handleTimeSlotChange}
-        />
-        <label htmlFor="time3">02:00 PM - 04:00 PM</label>
-      </div>
-      <div>
-        <input
-          type="checkbox"
-          id="time3"
-          value="04:00 AM - 06:00 PM"
-          checked={selectedTimeSlots.includes("04:00 AM - 06:00 PM")}
+        >
+          {" "}
+          02:00 PM - 04:00 PM
+        </Switch>
+
+        <Switch
+          id="time2"
+          value="04:00 PM - 06:00 PM"
+          isChecked={selectedTimeSlots.includes("04:00 PM - 06:00 PM")}
           onChange={handleTimeSlotChange}
-        />
-        <label htmlFor="time3">04:00 AM - 06:00 PM</label>
-      </div>
-    </div>
+        >
+          {" "}
+          04:00 PM - 06:00 PM
+        </Switch>
+      </Flex>
+    </Box>
   );
 };
 

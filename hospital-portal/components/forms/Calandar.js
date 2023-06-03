@@ -205,7 +205,7 @@ const AppointmentPage = () => {
       ]);
   };
   return (
-    <Flex>
+    <Flex mt={5}>
       <Box className="App">
         <Calendar
           views={["day", "agenda", "work_week", "month"]}

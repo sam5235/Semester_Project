@@ -1,31 +1,28 @@
 import { useState } from "react";
 import {
-  Box,
   Button,
+  Card,
+  CardBody,
   Flex,
   FormControl,
+  Heading,
   Input,
-  Select,
   Text,
 } from "@chakra-ui/react";
 import TimeSlot from "./TimeSlot";
+import { createAppointment } from "../../firebase/appointmentService";
 
 const AddHealthcare = ({ onClose = () => {} }) => {
-  const [name, setName] = useState("");
-  const [address, setAddress] = useState("");
-  const [type, setType] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [maxPatients, setMaxPatients] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [timeSlot, setTimeSlot] = useState([]);
 
   const handleOnClose = () => {
+    setSelectedDate("");
+    setMaxPatients("");
     setIsLoading("");
-    setName("");
-    setAddress("");
-    setType("");
-    setEmail("");
-    setPassword("");
+    setTimeSlot([]);
     onClose();
   };
 
@@ -33,43 +30,58 @@ const AddHealthcare = ({ onClose = () => {} }) => {
     setSelectedDate(event.target.value);
   };
 
-  const handleOnAdd = () => {
-    const center = { name, address, type, email, password };
+  const handleOnAdd = async () => {
+    for (const index in timeSlot) {
+      const appnt = {
+        startTime: timeSlot[index].slice(0, 8),
+        endTime: timeSlot[index].slice(11, 19),
+        maxPatients,
+        selectedDate,
+      };
+      await createAppointment(appnt);
+    }
     setIsLoading(true);
+    handleOnClose();
   };
 
   return (
-    <Box>
-      <Text fontSize="md" mb="2">
-        Fill Next Appointment{" "}
-      </Text>
-      <FormControl>
-        <Input
-          placeholder="Maximum number of patient"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-      </FormControl>
-      <FormControl mt={4}>
-        <div>
-          <label htmlFor="">Select a Date</label>
-        </div>
+    <Card mt={5}>
+      <CardBody>
+        <Heading fontSize="md" mb="2">
+          Fill Next Appointment{" "}
+        </Heading>
+        <FormControl>
+          <Input
+            placeholder="Maximum number of patient"
+            value={maxPatients}
+            onChange={(e) => setMaxPatients(e.target.value)}
+          />
+        </FormControl>
+        <FormControl mt={4}>
+          <div>
+            <Text as="b">Select a Date</Text>
+          </div>
 
-        <input
-          type="date"
-          id="date"
-          value={selectedDate}
-          onChange={handleDateChange}
-        />
-      </FormControl>
-      <TimeSlot />
+          <Input
+            type="date"
+            id="date"
+            value={selectedDate}
+            onChange={handleDateChange}
+          />
+        </FormControl>
+        <TimeSlot setSelectedTimeSlots={setTimeSlot} selectedTimeSlots={timeSlot} />
 
-      <Flex mt={5} justifyContent={"flex-end"}>
-        <Button colorScheme="brand" isLoading={isLoading} onClick={handleOnAdd}>
-          Add
-        </Button>
-      </Flex>
-    </Box>
+        <Flex mt={5} justifyContent={"flex-end"}>
+          <Button
+            colorScheme="brand"
+            isLoading={isLoading}
+            onClick={handleOnAdd}
+          >
+            Add
+          </Button>
+        </Flex>
+      </CardBody>
+    </Card>
   );
 };
 
