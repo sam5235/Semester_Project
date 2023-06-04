@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Button,
   Card,
@@ -9,20 +9,23 @@ import {
   Input,
   Text,
 } from "@chakra-ui/react";
-import TimeSlot from "./TimeSlot";
-import { createAppointment } from "../../firebase/appointmentService";
+import TimeSlot from "../forms/TimeSlot";
+import { updateAppointment } from "../../firebase/appointmentService";
 
-const AppointmentForm = ({ onClose = () => {} }) => {
-  const [maxPatients, setMaxPatients] = useState("");
+const AppointmentModal = ({ onClose = () => {}, appt }) => {
+  const [maxPatients, setMaxPatients] = useState(appt.max_patients);
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [timeSlot, setTimeSlot] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(appt.date);
+  const [timeSlots, setTimeSlots] = useState([
+    appt.start_time + " - " + appt.end_time,
+  ]);
 
   const handleOnClose = () => {
     setSelectedDate("");
     setMaxPatients("");
     setIsLoading("");
-    setTimeSlot([]);
+    setTimeSlots([]);
+    setIsLoading(false);
     onClose();
   };
 
@@ -30,25 +33,25 @@ const AppointmentForm = ({ onClose = () => {} }) => {
     setSelectedDate(event.target.value);
   };
 
-  const handleOnAdd = async () => {
-    for (const index in timeSlot) {
-      const appnt = {
-        startTime: timeSlot[index].slice(0, 8),
-        endTime: timeSlot[index].slice(11, 19),
-        maxPatients,
-        selectedDate,
-      };
-      await createAppointment(appnt);
-    }
+  const handleOnUpdate = async () => {
     setIsLoading(true);
-    handleOnClose();
+
+    updateAppointment({
+      ...appt,
+      max_patients: maxPatients,
+      date: selectedDate,
+      start_time: timeSlots[0].slice(0, 8),
+      end_time: timeSlots[0].slice(11, 19),
+    }, handleOnClose);
+
+   
   };
 
   return (
     <Card mt={5}>
       <CardBody>
         <Heading fontSize="md" mb="2">
-          Fill Next Appointment{" "}
+          Update an Appointment{" "}
         </Heading>
         <FormControl>
           <Input
@@ -69,15 +72,18 @@ const AppointmentForm = ({ onClose = () => {} }) => {
             onChange={handleDateChange}
           />
         </FormControl>
-        <TimeSlot setSelectedTimeSlots={setTimeSlot} selectedTimeSlots={timeSlot} />
+        <TimeSlot
+          setSelectedTimeSlots={setTimeSlots}
+          selectedTimeSlots={timeSlots}
+        />
 
         <Flex mt={5} justifyContent={"flex-end"}>
           <Button
             colorScheme="brand"
             isLoading={isLoading}
-            onClick={handleOnAdd}
+            onClick={handleOnUpdate}
           >
-            Add
+            Update
           </Button>
         </Flex>
       </CardBody>
@@ -85,4 +91,4 @@ const AppointmentForm = ({ onClose = () => {} }) => {
   );
 };
 
-export default AppointmentForm;
+export default AppointmentModal;
