@@ -24,25 +24,44 @@ import {
   Thead,
   Tr,
   useColorModeValue,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { FaRegHospital } from "react-icons/fa";
-import { DeleteIcon, EditIcon, SearchIcon } from "@chakra-ui/icons";
+import { EditIcon, SearchIcon } from "@chakra-ui/icons";
 
 import { getHealthCareCenters } from "../firebase/healthServices";
 import AddHealthcare from "../components/forms/AddHealthcare";
-import Stats from "../components/Stats";
+import HealthcareEdit from "../components/modals/HealthcareEdit";
+import Pagination from "../components/pagination";
 
 const HospitalPage = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [searchInput, setSearchInput] = useState("");
   const [selectedType, setSelectedType] = useState("all");
+  const [selectedHospital, setSetselectedHospital] = useState();
   const [selectedSort, setSelectedSort] = useState("none");
   const [healthCenters, setHealthCenters] = useState([]);
   const [isTableLoading, setIsTableLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(20);
 
   const fetchHealthcares = async () => {
     const healthCenters = await getHealthCareCenters();
     setHealthCenters(healthCenters);
     setIsTableLoading(false);
+  };
+
+  const addHealthcare = (healthcare) => {
+    setHealthCenters((centers) => [...centers, healthcare]);
+  };
+
+  const editHealthcare = (healthcare) => {
+    setHealthCenters((centers) => {
+      const newCenters = centers.filter((c) => c.id !== healthcare.id);
+      newCenters.push(healthcare);
+      return newCenters;
+    });
+    setSetselectedHospital(null);
   };
 
   const sorrtedHealthcares = healthCenters.slice().sort((a, b) => {
@@ -61,6 +80,14 @@ const HospitalPage = () => {
     (h) =>
       h.name.toLowerCase().includes(searchInput.toLowerCase()) &&
       (selectedType === "all" || h.type === selectedType)
+  );
+
+  const dataSize = filteredCenters.length;
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentHealthcares = filteredCenters.slice(
+    indexOfFirstItem,
+    indexOfLastItem
   );
 
   useEffect(() => {
@@ -131,14 +158,11 @@ const HospitalPage = () => {
           </Select>
           <IconButton
             mx="2"
+            disabled={!selectedHospital}
+            onClick={onOpen}
             colorScheme="brand"
             aria-label="Call Segun"
             icon={<EditIcon />}
-          />
-          <IconButton
-            colorScheme="red"
-            aria-label="Call Segun"
-            icon={<DeleteIcon />}
           />
         </Flex>
         {isTableLoading && (
@@ -147,37 +171,70 @@ const HospitalPage = () => {
           </Flex>
         )}
         {!isTableLoading && (
-          <TableContainer>
-            <Table variant="simple" colorScheme="brand">
-              <TableCaption>
-                Total healthcare services in Meditopia
-              </TableCaption>
-              <Thead>
-                <Tr>
-                  <Th />
-                  <Th>Health Care Name</Th>
-                  <Th>Type</Th>
-                  <Th>Address</Th>
-                </Tr>
-              </Thead>
-              <Tbody w="full">
-                {filteredCenters.map((center, key) => {
-                  return (
-                    <Tr key={key}>
-                      <Td>
-                        <Checkbox />
-                      </Td>
-                      <Td>{center.name}</Td>
-                      <Td>{center.type}</Td>
-                      <Td>{center.address}</Td>
-                    </Tr>
-                  );
-                })}
-              </Tbody>
-            </Table>
-          </TableContainer>
+          <>
+            <TableContainer>
+              <Table variant="simple" colorScheme="brand">
+                <TableCaption>
+                  Total healthcare services in Meditopia
+                </TableCaption>
+                <Thead>
+                  <Tr>
+                    <Th />
+                    <Th>Health Care Name</Th>
+                    <Th>Type</Th>
+                    <Th>Address</Th>
+                  </Tr>
+                </Thead>
+                <Tbody w="full">
+                  {currentHealthcares.map((center, key) => {
+                    const isChecked = Boolean(
+                      selectedHospital && selectedHospital.id === center.id
+                    );
+                    return (
+                      <Tr key={key} bg={isChecked && "blue.100"}>
+                        <Td w={10}>
+                          <Checkbox
+                            isChecked={isChecked}
+                            onChange={() => {
+                              if (isChecked) {
+                                setSetselectedHospital();
+                              } else {
+                                setSetselectedHospital(center);
+                              }
+                            }}
+                          />
+                        </Td>
+                        <Td>{center.name}</Td>
+                        <Td
+                          display="flex"
+                          // flexDirection="column"
+                          alignItems="center"
+                        >
+                          <Image src={`/${center.type}.png`} w={7} me={2} />
+                          <Text textTransform="capitalize">{center.type}</Text>
+                        </Td>
+                        <Td>{center.address}</Td>
+                      </Tr>
+                    );
+                  })}
+                </Tbody>
+              </Table>
+            </TableContainer>
+
+            <Pagination
+              items={filteredCenters}
+              dataSize={dataSize}
+              indexOfLastItem={indexOfLastItem}
+              indexOfFirstItem={indexOfFirstItem}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              itemsPerPage={itemsPerPage}
+              setItemsPerPage={setItemsPerPage}
+            />
+          </>
         )}
       </GridItem>
+
       <GridItem colSpan={2} position="sticky" top={70}>
         <Card bg="chakra-body-bg" boxShadow="xl">
           <CardBody>
@@ -191,6 +248,14 @@ const HospitalPage = () => {
           </CardBody>
         </Card>
       </GridItem>
+
+      <HealthcareEdit
+        isOpen={isOpen}
+        onClose={onClose}
+        healthcare={selectedHospital}
+        onAdd={addHealthcare}
+        onEdit={editHealthcare}
+      />
     </Grid>
   );
 };

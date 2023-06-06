@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import {
+  Box,
   Card,
   CardBody,
   Flex,
@@ -43,9 +44,16 @@ const Stats = () => {
               >
                 <GiHospitalCross color="white" fontSize={30} />
               </Flex>
-              <Text fontSize="xl" color="white" fontWeight="semibold">
-                {stat.health_centers || <Spinner color="white" size="sm" />}
-              </Text>
+              <Box h={25}>
+                {stat.health_centers ? (
+                  <Text fontSize="xl" color="white" fontWeight="semibold">
+                    {stat.health_centers}
+                  </Text>
+                ) : (
+                  <Spinner color="white" size="sm" />
+                )}
+              </Box>
+
               <Text fontSize="md" color="white">
                 Healthcares
               </Text>
@@ -68,9 +76,15 @@ const Stats = () => {
               >
                 <MdSick color="white" fontSize={30} />
               </Flex>
-              <Text fontSize="xl" color="white" fontWeight="semibold">
-                {stat.patients || <Spinner color="white" size="sm" />}
-              </Text>
+              <Box h={25}>
+                {stat.patients ? (
+                  <Text fontSize="xl" color="white" fontWeight="semibold">
+                    {stat.patients}
+                  </Text>
+                ) : (
+                  <Spinner color="white" size="sm" />
+                )}
+              </Box>
               <Text fontSize="md" color="white">
                 Patients
               </Text>
@@ -93,9 +107,15 @@ const Stats = () => {
               >
                 <FaClipboard color="white" fontSize={30} />
               </Flex>
-              <Text fontSize="xl" color="white" fontWeight="semibold">
-                {stat.records || <Spinner color="white" size="sm" />}
-              </Text>
+              <Box h={25}>
+                {stat.records ? (
+                  <Text fontSize="xl" color="white" fontWeight="semibold">
+                    {stat.records}
+                  </Text>
+                ) : (
+                  <Spinner color="white" size="sm" />
+                )}
+              </Box>
               <Text fontSize="md" color="white">
                 Medical Records
               </Text>
@@ -119,9 +139,15 @@ const Stats = () => {
               >
                 <IoNewspaperOutline color="#fff" fontSize={30} />
               </Flex>
-              <Text fontSize="xl" color="white" fontWeight="semibold">
-                {stat.blogs || <Spinner color="white" size="sm" />}
-              </Text>
+              <Box h={25}>
+                {stat.blogs ? (
+                  <Text fontSize="xl" color="white" fontWeight="semibold">
+                    {stat.records}
+                  </Text>
+                ) : (
+                  <Spinner color="white" size="sm" />
+                )}
+              </Box>
               <Text fontSize="md" color="white">
                 Medical Blogs
               </Text>

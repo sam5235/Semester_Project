@@ -7,19 +7,24 @@ import {
   Input,
   Select,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import PasswordInput from "../PasswordInput";
 import { createHealthCareCenter } from "../../firebase/healthServices";
+import { editHealthcareCenter } from "../../firebase/healthServices";
 
-const AddHealthcare = ({ onClose = () => {} }) => {
-  const [name, setName] = useState("");
-  const [address, setAddress] = useState("");
-  const [type, setType] = useState("");
+const AddHealthcare = ({ onClose = () => {}, healthcare, onAdd, onEdit }) => {
+  const toast = useToast();
+  const [name, setName] = useState((healthcare && healthcare.name) || "");
+  const [address, setAddress] = useState(
+    (healthcare && healthcare.address) || ""
+  );
+  const [type, setType] = useState((healthcare && healthcare.type) || "");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleOnClose = () => {
+  const handleOnClose = (center) => {
     setIsLoading("");
     setName("");
     setAddress("");
@@ -27,12 +32,28 @@ const AddHealthcare = ({ onClose = () => {} }) => {
     setEmail("");
     setPassword("");
     onClose();
+    toast({
+      title: "Operation successfull!",
+      description: `We've ${
+        healthcare ? "updated " : "added"
+      }  the healthcare.`,
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+    });
+    healthcare ? onEdit(center) : onAdd(center);
   };
 
   const handleOnAdd = () => {
     const center = { name, address, type, email, password };
     setIsLoading(true);
     createHealthCareCenter(center, handleOnClose);
+  };
+
+  const handleOnEdit = () => {
+    const center = { ...healthcare, name, address, type };
+    setIsLoading(true);
+    editHealthcareCenter(center, handleOnClose);
   };
 
   return (
@@ -71,33 +92,41 @@ const AddHealthcare = ({ onClose = () => {} }) => {
         </Select>
       </FormControl>
 
-      <Text fontSize="md" color="gray.500" mt="4">
-        Login Credential
-      </Text>
-      <Text fontSize="xs" mb="2" color="gray.400">
-        The password should be changed after first login
-      </Text>
+      {!healthcare && (
+        <>
+          <Text fontSize="md" color="gray.500" mt="4">
+            Login Credential
+          </Text>
+          <Text fontSize="xs" mb="2" color="gray.400">
+            The password should be changed after first login
+          </Text>
 
-      <FormControl>
-        <Input
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-      </FormControl>
+          <FormControl>
+            <Input
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </FormControl>
 
-      <FormControl mt={4}>
-        <PasswordInput
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </FormControl>
+          <FormControl mt={4}>
+            <PasswordInput
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </FormControl>
+        </>
+      )}
       <Flex mt={5} justifyContent={"flex-end"}>
         <Button disabled={isLoading} variant="ghost" mr={3} onClick={onClose}>
           Cancel
         </Button>
-        <Button colorScheme="brand" isLoading={isLoading} onClick={handleOnAdd}>
-          Add
+        <Button
+          colorScheme="brand"
+          isLoading={isLoading}
+          onClick={healthcare ? handleOnEdit : handleOnAdd}
+        >
+          {healthcare ? "Edit" : "Add"}
         </Button>
       </Flex>
     </Box>

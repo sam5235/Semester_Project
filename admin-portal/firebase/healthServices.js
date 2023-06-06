@@ -23,17 +23,27 @@ export const createHealthCareCenter = (center, onFinish) => {
       });
     })
     .catch((error) => {
-      onFinish();
+      onFinish(center);
       console.log({ error });
     });
+};
+
+export const editHealthcareCenter = (center, onFinish) => {
+  setDoc(doc(db, "health_centers", center.id), {
+    name: center.name,
+    address: center.address,
+    type: center.type,
+  }).then(() => {
+    onFinish(center);
+  });
 };
 
 export const getHealthCareCenters = async () => {
   const centers = [];
   const querySnapshot = await getDocs(collection(db, "health_centers"));
-  
+
   querySnapshot.forEach((doc) => {
-    centers.push(doc.data());
+    centers.push({ id: doc.id, ...doc.data() });
   });
 
   return centers;

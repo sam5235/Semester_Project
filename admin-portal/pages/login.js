@@ -35,7 +35,6 @@ const LogIn = () => {
     setIsLoginLoading(true);
     login(email, password)
       .then((cred) => {
-        console.log({ cred });
         setIsLoginLoading(false);
       })
       .catch((err) => {
@@ -45,7 +44,7 @@ const LogIn = () => {
   };
 
   if (user) {
-    router.replace("/hospital");
+    router.replace("/healthcare");
     return null;
   }
 
