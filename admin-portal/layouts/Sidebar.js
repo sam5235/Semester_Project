@@ -20,9 +20,9 @@ import Stats from "../components/Stats";
 
 const LinkItems = [
   // { name: "Home", icon: FiHome, href: "/" },
-  { name: "Healthcares", icon: FaRegHospital, href: "/hospital" },
+  { name: "Healthcares", icon: FaRegHospital, href: "/healthcare" },
   { name: "Patients", icon: MdOutlineSick, href: "/patients" },
-  { name: "Blogs", icon: MdOutlineArticle },
+  { name: "Blogs", icon: MdOutlineArticle, href: "/blogs" },
 ];
 
 export default function Sidebar({ children }) {
