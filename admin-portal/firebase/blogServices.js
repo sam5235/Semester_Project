@@ -1,4 +1,4 @@
-import { collection, getDocs } from "firebase/firestore";
+import { collection, doc, getDocs, setDoc } from "firebase/firestore";
 import { db } from "../config/firebase";
 
 export const getBlogs = async () => {
@@ -9,4 +9,10 @@ export const getBlogs = async () => {
   });
 
   return blogs;
+};
+
+export const editBlog = (blog, onFinish) => {
+  setDoc(doc(db, "blogs", blog.id), blog).then(() => {
+    onFinish(blog);
+  });
 };

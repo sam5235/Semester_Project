@@ -21,25 +21,48 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { RiArticleLine, RiSearch2Line } from "react-icons/ri";
+import { MdOutlineArticle } from "react-icons/md";
+import { BsFillImageFill } from "react-icons/bs";
 import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
-import { useAuth } from "../context/AuthContext";
-import { getBlogs } from "../firebase/blogServices";
-import { query } from "firebase/firestore";
+import { editBlog, getBlogs } from "../firebase/blogServices";
 import Pagination from "./pagination";
 
-const PostTable = ({ setBlogToEdit, setFiles }) => {
-  const { user } = useAuth();
+const PostTable = ({ setBlogToApprove, setMetadata }) => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedBlog, setSelectedBlog] = useState();
   const [query, setQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [isApproveLoading, setIsApproveLoading] = useState(false);
 
   const fetchBlogs = async () => {
     const data = await getBlogs();
     data && setLoading(false);
     setBlogs(data);
+  };
+
+  const onFinishUpdating = (updatedBlog) => {
+    setBlogs((blogs) =>
+      blogs.map((blog) => {
+        if (blog.id === updatedBlog.id) {
+          return updatedBlog;
+        }
+        return blog;
+      })
+    );
+    setIsApproveLoading(false);
+  };
+
+  const approveOrDeny = (blog) => {
+    setIsApproveLoading(true);
+    let updatedBlog = {};
+    if (blog.status !== "approved") {
+      updatedBlog = { ...blog, status: "approved" };
+    } else {
+      updatedBlog = { ...blog, status: "rejected" };
+    }
+    editBlog(updatedBlog, onFinishUpdating);
   };
 
   const filteredBlogs = blogs.filter(
@@ -88,13 +111,7 @@ const PostTable = ({ setBlogToEdit, setFiles }) => {
                 rounded="3xl"
                 colorScheme="brand"
                 onClick={() => {
-                  setFiles([
-                    {
-                      name: selectedBlog.coverImage,
-                      preview: selectedBlog.coverImage,
-                    },
-                  ]);
-                  setBlogToEdit({ ...selectedBlog, edit: true });
+                  setBlogToApprove({ ...selectedBlog, edit: true });
                 }}
               >
                 View Cover Info
@@ -105,13 +122,7 @@ const PostTable = ({ setBlogToEdit, setFiles }) => {
                 ml={2}
                 colorScheme="brand"
                 onClick={() => {
-                  setFiles([
-                    {
-                      name: selectedBlog.coverImage,
-                      preview: selectedBlog.coverImage,
-                    },
-                  ]);
-                  setBlogToEdit({ ...selectedBlog, edit: true });
+                  setBlogToApprove({ ...selectedBlog, edit: true });
                 }}
               >
                 View Content
@@ -137,31 +148,18 @@ const PostTable = ({ setBlogToEdit, setFiles }) => {
         <Table variant="striped">
           <Thead>
             <Tr>
-              <Th />
+              {/* <Th /> */}
               <Th>Title & Description</Th>
               <Th isNumeric>Length</Th>
               <Th>Category</Th>
               <Th>Published</Th>
               <Th>Status</Th>
-              <Th>Approve or Reject</Th>
+              <Th textAlign="center">Actions</Th>
             </Tr>
           </Thead>
           <Tbody>
             {currentBlogs.map((blog, key) => (
               <Tr key={key}>
-                <Td>
-                  <Checkbox
-                    w={"20px"}
-                    isChecked={selectedBlog && selectedBlog.id === blog.id}
-                    onChange={() => {
-                      setSelectedBlog(
-                        selectedBlog && selectedBlog.id === blog.id
-                          ? null
-                          : blog
-                      );
-                    }}
-                  />
-                </Td>
                 <Td>
                   <Flex alignItems="center">
                     <Image w="50px" src={blog.coverImage} />
@@ -193,7 +191,11 @@ const PostTable = ({ setBlogToEdit, setFiles }) => {
                 <Td>
                   <Badge
                     colorScheme={
-                      blog.status === "approved" ? "green" : "orange"
+                      blog.status === "approved"
+                        ? "green"
+                        : blog.status === "rejected"
+                        ? "red"
+                        : "orange"
                     }
                     fontSize="0.7em"
                     textTransform="capitalize"
@@ -205,23 +207,52 @@ const PostTable = ({ setBlogToEdit, setFiles }) => {
                   <Flex justify="center">
                     <Button
                       variant="solid"
-                      colorScheme="green"
+                      colorScheme="brand"
                       rounded="3xl"
-                      disabled={blog.status === "approved"}
+                      onClick={() => setMetadata(blog)}
                       p="2"
+                      disabled={isApproveLoading}
+                      ml={2}
                     >
-                      <Icon as={CheckIcon} fontSize="xl" color="white" />
+                      <BsFillImageFill />
                     </Button>
                     <Button
                       variant="solid"
-                      colorScheme="red"
+                      colorScheme="brand"
                       rounded="3xl"
+                      onClick={() => setBlogToApprove(blog)}
                       p="2"
-                      disabled={blog.status !== "approved"}
+                      disabled={isApproveLoading}
                       ml={2}
                     >
-                      <Icon as={CloseIcon} fontSize="xl" color="white" />
+                      <MdOutlineArticle />
                     </Button>
+                    {blog.status !== "approved" && (
+                      <Button
+                        variant="solid"
+                        colorScheme="green"
+                        rounded="3xl"
+                        disabled={isApproveLoading}
+                        onClick={() => approveOrDeny(blog)}
+                        p="2"
+                        mx={1}
+                      >
+                        <Icon as={CheckIcon} fontSize="xl" color="white" />
+                      </Button>
+                    )}
+                    {blog.status === "approved" && (
+                      <Button
+                        variant="solid"
+                        colorScheme="red"
+                        rounded="3xl"
+                        onClick={() => approveOrDeny(blog)}
+                        p="2"
+                        disabled={isApproveLoading}
+                        mx={1}
+                      >
+                        <Icon as={CloseIcon} fontSize="xl" color="white" />
+                      </Button>
+                    )}
                   </Flex>
                 </Td>
               </Tr>
