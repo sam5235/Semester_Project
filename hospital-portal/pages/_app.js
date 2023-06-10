@@ -1,6 +1,6 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import { createStore } from "redux";
-import {Provider} from 'react-redux';
+import { Provider } from "react-redux";
 import Router, { useRouter } from "next/router";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
@@ -12,6 +12,7 @@ import ProtectedRoute from "../components/wrappers/ProtetctedRoute";
 import AuthContextProvider from "../context/AuthContext";
 import Layout from "../Layout/Layout";
 import allReducers from "../redux/reducers";
+import SEOTags from "../../admin-portal/components/SEOTags";
 
 NProgress.configure({ showSpinner: false });
 Router.events.on("routeChangeStart", () => NProgress.start());
@@ -26,21 +27,26 @@ export default function App({ Component, pageProps }) {
 
   return (
     <Provider store={store}>
-
-    <ChakraProvider theme={theme}>
-      <AuthContextProvider>
-        {shouldBeAuth ? (
-          <ProtectedRoute>
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
-          </ProtectedRoute>
-        ) : (
-          <Component {...pageProps} />
-        )}
-      </AuthContextProvider>
-    </ChakraProvider>
+      <SEOTags
+        title="Med-Ethiopia Admin"
+        description="Effortlessly manage your centralized medical system with our powerful admin website."
+        url="www.med-ethiopia.admin.com"
+        image="./logo.png"
+        card="summary_large_image"
+      />
+      <ChakraProvider theme={theme}>
+        <AuthContextProvider>
+          {shouldBeAuth ? (
+            <ProtectedRoute>
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+            </ProtectedRoute>
+          ) : (
+            <Component {...pageProps} />
+          )}
+        </AuthContextProvider>
+      </ChakraProvider>
     </Provider>
-
   );
 }
