@@ -1,76 +1,133 @@
 import { StarIcon } from "@chakra-ui/icons";
-import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, Avatar, Badge, Box, Flex, Text, useColorModeValue } from "@chakra-ui/react";
+import {
+  Accordion,
+  AccordionButton,
+  AccordionIcon,
+  AccordionItem,
+  AccordionPanel,
+  Avatar,
+  Badge,
+  Box,
+  Flex,
+  Text,
+  useColorModeValue,
+} from "@chakra-ui/react";
+import { MdDateRange } from "react-icons/md";
+import { FaUserNurse } from "react-icons/fa";
 import { VerticalTimelineElement } from "react-vertical-timeline-component";
 
 const RecordCard = ({ record }) => {
-    return (
-        <VerticalTimelineElement
-            className="vertical-timeline-element--work"
-            contentStyle={{ background: useColorModeValue("#3086e8", "#1A202C"), color: "white" }}
-            contentArrowStyle={{ borderRight: `7px solid ${useColorModeValue("#3086e8", "#fff")}` }}
-            iconStyle={{ background: useColorModeValue("#3086e8", "#1A202C"), color: '#fff' }}
-            icon={<StarIcon />}
-        >
+  return (
+    <VerticalTimelineElement
+      className="vertical-timeline-element--work"
+      contentStyle={{
+        background: useColorModeValue("#fff", "#1A202C"),
+        boxShadow: "none",
+        padding: 0,
+        borderRaduis: "10px",
+      }}
+      contentArrowStyle={{
+        borderRight: `7px solid ${useColorModeValue("#3086e8", "#fff")}`,
+      }}
+      iconStyle={{
+        background: useColorModeValue("#3086e8", "#1A202C"),
+        color: "#fff",
+      }}
+      icon={<StarIcon />}
+    >
+      <Box p={5} rounded="xl" boxShadow={"2xl"}>
+        <Box mb={2}>
+          <Flex alignItems="center">
+            <Avatar mr={2} name={record._hospital.name} />
             <Box>
-                <Box>
-                    <Flex>
-                        <Avatar name={record.Hospital_name} />
-                        <Text>{record.Hospital_name} </Text>
-
-                    </Flex>
-                    <Flex>
-                        <Text>11/02/2023</Text>
-                    </Flex>
-                    <Flex>
-                        <Text>{record.doctor}</Text>
-                    </Flex>
-                    <Flex>
-                        <Flex alignItems="center">
-                            {record.diseases.map((disease) => (
-                                // <Text px={2}>{disease} </Text>
-                                <Badge mt={2} maxH="24px" mx={2} colorScheme='blue'>{disease}</Badge>
-
-                            ))}
-
-                        </Flex>
-
-                    </Flex>
-                    <Accordion allowMultiple>
-                        <AccordionItem style={{ border: "0px" }}>
-                            <h2>
-                                <AccordionButton>
-                                    <Box color="white">
-                                        <Text>Perscription</Text>
-
-                                    </Box>
-                                </AccordionButton>
-                            </h2>
-                            <AccordionPanel>
-                                {record.persc}
-                            </AccordionPanel>
-                        </AccordionItem>
-                        <AccordionItem style={{ border: "0px", paddingLeft: "" }}>
-                            <h2>
-                                <AccordionButton>
-                                    <Box color="white">
-                                        <Text>Description</Text>
-
-                                    </Box>
-                                </AccordionButton>
-                            </h2>
-                            <AccordionPanel>
-                                {record.desc}
-
-                            </AccordionPanel>
-                        </AccordionItem>
-                    </Accordion>
-                </Box>
+              <Text sx={{ marginTop: "0px !important" }}>
+                {record._hospital.name}
+              </Text>
+              <Text
+                sx={{
+                  marginTop: "0px !important",
+                  fontSize: "13px !important",
+                  color: "gray",
+                }}
+              >
+                {record._hospital.address}
+              </Text>
             </Box>
-            {/* <h3 className="vertical-timeline-element-title">{record.name}</h3>
-            <h4 className="vertical-timeline-element-subtitle">{record.phone}</h4> */}
+          </Flex>
+          <Flex my={4}>
+            <Flex alignItems="center" flexWrap="wrap">
+              {record.diseases.map((disease) => (
+                <Badge mx={2} my={1} px={2} colorScheme="red">
+                  {disease}
+                </Badge>
+              ))}
+            </Flex>
+          </Flex>
+          <Flex mx={4} alignItems="center" mt={4}>
+            <MdDateRange fontSize={30} />
+            <Text
+              pl={2}
+              sx={{
+                marginTop: "0px !important",
+              }}
+            >
+              {record.createdAt.toDate().toDateString()}
+            </Text>
+          </Flex>
+          <Flex mx={4} alignItems="center" mt={2}>
+            <FaUserNurse fontSize={30} />
+            <Text
+              pl={2}
+              sx={{
+                marginTop: "0px !important",
+              }}
+            >
+              {record.doctor}
+            </Text>
+          </Flex>
 
-        </VerticalTimelineElement>
-    );
-}
+          <Accordion allowMultiple mt={4}>
+            <AccordionItem>
+              <h2>
+                <AccordionButton rounded="md">
+                  <Box as="span" flex="1" textAlign="left">
+                    <Text
+                      pr={2}
+                      sx={{
+                        marginTop: "0px !important",
+                      }}
+                    >
+                      Perscription
+                    </Text>
+                  </Box>
+                  <AccordionIcon />
+                </AccordionButton>
+              </h2>
+              <AccordionPanel>{record.persc}</AccordionPanel>
+            </AccordionItem>
+            <AccordionItem style={{ paddingLeft: "" }}>
+              <h2>
+                <AccordionButton>
+                  <Box as="span" flex="1" textAlign="left">
+                    <Text
+                      pr={2}
+                      sx={{
+                        marginTop: "0px !important",
+                      }}
+                    >
+                      Description
+                    </Text>
+                  </Box>
+                  <AccordionIcon />
+                </AccordionButton>
+              </h2>
+              <AccordionPanel>{record.desc}</AccordionPanel>
+            </AccordionItem>
+          </Accordion>
+        </Box>
+      </Box>
+    </VerticalTimelineElement>
+  );
+};
 
 export default RecordCard;

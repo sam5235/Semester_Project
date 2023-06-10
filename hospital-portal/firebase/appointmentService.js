@@ -25,15 +25,29 @@ export const getAppointment = async () => {
   return appointments;
 };
 
+export const getAppointmentByDate = async (date) => {
+  const appointments = [];
+  const snapshots = await getDocs(
+    query(
+      collection(db, "appointments"),
+      where("date", ">=", date),
+      where("date", "<=", date)
+    )
+  );
+  snapshots.forEach((doc) => {
+    appointments.push({ ...doc.data(), id: doc.id });
+  });
+
+  return appointments;
+};
+
 export const updateAppointment = (appnt, onFinish) => {
   setDoc(doc(db, "appointments", appnt.id), {
     ...appnt,
-  }).then(onFinish);
+  }).then(() => onFinish(appnt));
 };
 
 export const createAppointment = async (appnt) => {
-  console.log("entered", appnt);
-
   const ref = await addDoc(collection(db, "appointments"), {
     start_time: appnt.startTime,
     end_time: appnt.endTime,
@@ -42,4 +56,5 @@ export const createAppointment = async (appnt) => {
     patientsId: [],
     hospitalId: auth.currentUser.uid,
   });
+  return ref;
 };
