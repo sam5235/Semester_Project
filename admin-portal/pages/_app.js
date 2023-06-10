@@ -2,12 +2,13 @@ import { ChakraProvider } from "@chakra-ui/react";
 import Router, { useRouter } from "next/router";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
-import "../styles/globals.css"
+import "../styles/globals.css";
 
 import Layout from "../components/Layout";
 import ProtectedRoute from "../components/wrappers/ProtectedRoute";
 import AuthContextProvider from "../context/AuthContext";
 import theme from "../theme/theme";
+import SEOTags from "../components/SEOTags";
 
 NProgress.configure({ showSpinner: false });
 
@@ -22,6 +23,12 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <ChakraProvider theme={theme}>
+      <SEOTags
+        title="Med-Ethiopia Admin"
+        description="Effortlessly manage your centralized medical system with our powerful admin website."
+        url="www.med-ethiopia.admin.com"
+        image="./logo.png"
+      />
       <AuthContextProvider>
         {shouldBeAuth ? (
           <ProtectedRoute>
