@@ -70,6 +70,7 @@ export const filterPatients = async (queries) => {
     console.log(doc);
     Lists.push(parsePatient(doc));
   });
+  
   const querySnapshot2 = await getDocs(phoneq);
   querySnapshot2.forEach((doc) => {
     // doc.data() is never undefined for query doc snapshots

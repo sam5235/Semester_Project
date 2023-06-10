@@ -12,10 +12,16 @@ import {
 import { auth, db } from "../config/firebase";
 
 const parseRecord = async (data) => {
-  const getHospitalName = await getDoc(doc(db, "health_centers", data.data().hospital));
-  const getPhone = await getDoc(doc(db, "patients", data.data().patientId))
-  return { ...data.data(), Hospital_name: getHospitalName.data().name, Patient_phone: getPhone.data().phone }
-}
+  const getHospitalName = await getDoc(
+    doc(db, "health_centers", data.data().hospital)
+  );
+  const getPatient = await getDoc(doc(db, "patients", data.data().patientId));
+  return {
+    ...data.data(),
+    _hospital: getHospitalName.data(),
+    _patient: getPatient.data(),
+  };
+};
 
 export const getRecords = async (patientId) => {
   const records = [];
@@ -25,9 +31,8 @@ export const getRecords = async (patientId) => {
   );
   const querySnapshot = await getDocs(ourQ);
   for (const data of querySnapshot.docs) {
-
     records.push(await parseRecord(data));
-  };
+  }
   return records;
 };
 

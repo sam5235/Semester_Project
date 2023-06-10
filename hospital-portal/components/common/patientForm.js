@@ -8,13 +8,16 @@ import {
   Button,
   Heading,
   useColorModeValue,
-  useDisclosure,
   useToast,
+  Flex,
+  Image,
+  Select,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { RegisterPatient } from "../../firebase/patientServices";
 import PasswordInput from "../Passwordinput";
 import { useDispatch } from "react-redux";
+import { MdOutlineSick } from "react-icons/md";
 import { addPatient as addSinglePatient } from "../../redux/actions";
 
 const PatientForm = ({ onClose = () => {} }) => {
@@ -92,11 +95,14 @@ const PatientForm = ({ onClose = () => {} }) => {
       bg={useColorModeValue("white", "gray.800")}
       position="sticky"
       top="80px"
+      rounded="lg"
       p={6}
     >
-      <Heading mb={3} size="md">
-        Patient Registration
-      </Heading>
+      <Flex mb={3} alignItems="center" direction="column">
+        <Image src="/patient.png" maxW="250" mx="auto" />
+        <Heading size="md">Patient Registration</Heading>
+      </Flex>
+
       <FormControl mb={3}>
         <FormLabel fontSize="sm">Full Name</FormLabel>
         <Input
@@ -104,11 +110,10 @@ const PatientForm = ({ onClose = () => {} }) => {
           onChange={(e) => {
             setName(e.target.value);
           }}
-          border="1px solid"
-          borderColor="brand.200"
           type="text"
         />
       </FormControl>
+
       <FormControl mb={3}>
         <FormLabel fontSize="sm">Email</FormLabel>
         <Input
@@ -116,11 +121,10 @@ const PatientForm = ({ onClose = () => {} }) => {
           onChange={(e) => {
             setEmail(e.target.value);
           }}
-          border="1px solid"
-          borderColor="brand.200"
           type="email"
         />
       </FormControl>
+
       <FormControl mb={3}>
         <FormLabel fontSize="sm">Password</FormLabel>
         <PasswordInput
@@ -128,6 +132,7 @@ const PatientForm = ({ onClose = () => {} }) => {
           onChange={(e) => setPassword(e.target.value)}
         />
       </FormControl>
+
       <FormControl mb={3}>
         <FormLabel fontSize="sm">Phone</FormLabel>
         <Input
@@ -135,11 +140,10 @@ const PatientForm = ({ onClose = () => {} }) => {
           onChange={(e) => {
             setPhone(e.target.value);
           }}
-          border="1px solid"
-          borderColor="brand.200"
           type="number"
         />
       </FormControl>
+
       <FormControl mb={3}>
         <FormLabel fontSize="sm">Address</FormLabel>
         <Input
@@ -148,10 +152,9 @@ const PatientForm = ({ onClose = () => {} }) => {
             setAddress(e.target.value);
           }}
           type="text"
-          border="1px solid"
-          borderColor="brand.200"
         />
       </FormControl>
+
       <Grid templateColumns="repeat(8, 1fr)" gap={4} mb={3}>
         <GridItem colSpan={4}>
           <FormControl mb={3}>
@@ -161,8 +164,6 @@ const PatientForm = ({ onClose = () => {} }) => {
               onChange={(e) => {
                 setAge(e.target.value);
               }}
-              border="1px solid"
-              borderColor="brand.200"
               type="number"
             />
           </FormControl>
@@ -170,15 +171,15 @@ const PatientForm = ({ onClose = () => {} }) => {
         <GridItem colSpan={4}>
           <FormControl mb={3}>
             <FormLabel fontSize="sm">Sex</FormLabel>
-            <Input
+            <Select
               value={sex}
               onChange={(e) => {
                 setSex(e.target.value);
               }}
-              border="1px solid"
-              borderColor="brand.200"
-              type="text"
-            />
+            >
+              <option value="male">Male</option>
+              <option value="female">Male</option>
+            </Select>
           </FormControl>
         </GridItem>
         <GridItem colSpan={4}>
@@ -189,8 +190,6 @@ const PatientForm = ({ onClose = () => {} }) => {
               onChange={(e) => {
                 setHeight(e.target.value);
               }}
-              border="1px solid"
-              borderColor="brand.200"
               type="number"
             />
           </FormControl>
@@ -203,8 +202,6 @@ const PatientForm = ({ onClose = () => {} }) => {
               onChange={(e) => {
                 setWeight(e.target.value);
               }}
-              border="1px solid"
-              borderColor="brand.200"
               type="number"
             />
           </FormControl>

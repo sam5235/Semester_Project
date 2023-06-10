@@ -12,7 +12,7 @@ import ProtectedRoute from "../components/wrappers/ProtetctedRoute";
 import AuthContextProvider from "../context/AuthContext";
 import Layout from "../Layout/Layout";
 import allReducers from "../redux/reducers";
-import SEOTags from "../../admin-portal/components/SEOTags";
+import SEOTags from "../components/SEOTags";
 
 NProgress.configure({ showSpinner: false });
 Router.events.on("routeChangeStart", () => NProgress.start());
@@ -24,14 +24,16 @@ export default function App({ Component, pageProps }) {
   const { pathname } = useRouter();
 
   const shouldBeAuth = pathname?.toLowerCase() !== "/login";
+  const des =
+    "Streamline healthcare with our centralized system. Connect with doctors, book appointments, access records, and receive personalized care. Experience efficient coordination, faster diagnosis, and improved outcomes. Join now!";
 
   return (
     <Provider store={store}>
       <SEOTags
-        title="Med-Ethiopia Admin"
-        description="Effortlessly manage your centralized medical system with our powerful admin website."
-        url="www.med-ethiopia.admin.com"
+        title="Med-Ethiopia Hospital"
+        description={des}
         image="./logo.png"
+        url="www.med-ethiopia.hospital.com"
         card="summary_large_image"
       />
       <ChakraProvider theme={theme}>

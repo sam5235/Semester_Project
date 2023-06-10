@@ -58,7 +58,7 @@ const Sidebar = ({ children }) => {
         ))}
       </Flex>
 
-      <Container pl={70} maxW="8xl">
+      <Container pl={70} maxW={1500}>
         {children}
       </Container>
     </Flex>

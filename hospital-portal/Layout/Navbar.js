@@ -3,7 +3,7 @@ import {
   Box,
   Image,
   Button,
-  Container, 
+  Container,
   Menu,
   MenuList,
   MenuItem,
@@ -21,12 +21,14 @@ import {
 import { MdOutlineSick } from "react-icons/md";
 import { IoMdLogOut, IoMdSettings } from "react-icons/io";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
+import { useRouter } from "next/router";
 
 import { useAuth } from "../context/AuthContext";
 import PatientForm from "../components/common/patientForm";
 import AddRecords from "../components/modals/AddRecordModal";
 
 const Navbar = () => {
+  const router = useRouter();
   const { colorMode, toggleColorMode } = useColorMode();
   const { user, logout } = useAuth();
   const {
@@ -44,10 +46,10 @@ const Navbar = () => {
       zIndex={2}
       py={1}
     >
-      <Container maxW="8xl">
+      <Container maxW={1500}>
         <Flex h={12} justifyContent="space-between" alignItems="center" px={3}>
           <Flex>
-            <Image src="logo.png" width="40px" />
+            <Image src="/logo.png" width="40px" />
             <Box ml={2}>
               <Text
                 fontSize="1xl"
@@ -77,7 +79,7 @@ const Navbar = () => {
             <Modal isOpen={isForm} onClose={closeForm}>
               <ModalOverlay />
               <ModalContent>
-                <PatientForm onClose={closeForm}/>
+                <PatientForm onClose={closeForm} />
               </ModalContent>
             </Modal>
 
@@ -101,7 +103,12 @@ const Navbar = () => {
                   <Divider />
                 </Box>
 
-                <MenuItem icon={<IoMdSettings />}>Settings</MenuItem>
+                <MenuItem
+                  onClick={() => router.push("/settings")}
+                  icon={<IoMdSettings />}
+                >
+                  Settings
+                </MenuItem>
                 <MenuItem icon={<IoMdLogOut />} onClick={logout}>
                   Logout
                 </MenuItem>

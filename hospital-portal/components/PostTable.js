@@ -32,7 +32,7 @@ const PostTable = ({ setBlogToEdit, setFiles }) => {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedBlog, setSelectedBlog] = useState();
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
 
   const fetchBlogs = async () => {
     const data = await getBlogs();
@@ -40,7 +40,10 @@ const PostTable = ({ setBlogToEdit, setFiles }) => {
     setBlogs(data);
   };
 
-  const filteredBlogs = blogs.filter((blog) => query === '' || blog.title.toLowerCase().includes(query.toLowerCase()))
+  const filteredBlogs = blogs.filter(
+    (blog) =>
+      query === "" || blog.title.toLowerCase().includes(query.toLowerCase())
+  );
 
   useEffect(() => {
     fetchBlogs();
@@ -100,7 +103,7 @@ const PostTable = ({ setBlogToEdit, setFiles }) => {
           <Input
             placeholder="Search..."
             colorScheme="brand"
-            bg={useColorModeValue("white", 'gray.900')}
+            bg={useColorModeValue("white", "gray.900")}
             mx={2}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -170,7 +173,13 @@ const PostTable = ({ setBlogToEdit, setFiles }) => {
                 </Td>
                 <Td>
                   <Badge
-                    colorScheme={blog.status === 'approved' ? 'green' : 'orange'}
+                    colorScheme={
+                      blog.status === "approved"
+                        ? "green"
+                        : blog.status === "rejected"
+                        ? "red"
+                        : "orange"
+                    }
                     fontSize="0.7em"
                     textTransform="capitalize"
                   >
